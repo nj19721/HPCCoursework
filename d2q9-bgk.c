@@ -302,12 +302,20 @@ int reboundCollisionAVVels(const t_param params, t_speed* cells, t_speed* tmp_ce
       else
       {
         /* compute local density total */
-        float local_density = 0.f;
-
-        for (int kk = 0; kk < NSPEEDS; kk++)
+        float local_density = 0.f + tmp_cells[ii + jj*params.nx].speeds[0]
+                      + tmp_cells[ii + jj*params.nx].speeds[1]
+                      + tmp_cells[ii + jj*params.nx].speeds[2]
+                      + tmp_cells[ii + jj*params.nx].speeds[3]
+                      + tmp_cells[ii + jj*params.nx].speeds[4]
+                      + tmp_cells[ii + jj*params.nx].speeds[5]
+                      + tmp_cells[ii + jj*params.nx].speeds[6]
+                      + tmp_cells[ii + jj*params.nx].speeds[7]
+                      + tmp_cells[ii + jj*params.nx].speeds[8];                          
+        
+        /*for (int kk = 0; kk < NSPEEDS; kk++)
         {
           local_density += tmp_cells[ii + jj*params.nx].speeds[kk];
-        }
+        }*/
 
         /* compute x velocity component */
         float u_x = (tmp_cells[ii + jj*params.nx].speeds[1]
