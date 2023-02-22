@@ -268,6 +268,10 @@ int reboundCollisionAVVels(const t_param params, t_speed* cells, t_speed* tmp_ce
   const float w1 = 1.f / 9.f;  /* weighting factor */
   const float w2 = 1.f / 36.f; /* weighting factor */
 
+  //so we don't have to recompute these many times every loop iteration
+  const float c_sq_sq_2f = 2.f * c_sq * c_sq;
+  const float c_sq_2f = 2.f * c_sq;
+
   int    tot_cells = 0;  /* no. of cells used in calculation */
   float tot_u;          /* accumulated magnitudes of velocity for each cell */
 
@@ -302,20 +306,12 @@ int reboundCollisionAVVels(const t_param params, t_speed* cells, t_speed* tmp_ce
       else
       {
         /* compute local density total */
-        float local_density = 0.f + tmp_cells[ii + jj*params.nx].speeds[0]
-                      + tmp_cells[ii + jj*params.nx].speeds[1]
-                      + tmp_cells[ii + jj*params.nx].speeds[2]
-                      + tmp_cells[ii + jj*params.nx].speeds[3]
-                      + tmp_cells[ii + jj*params.nx].speeds[4]
-                      + tmp_cells[ii + jj*params.nx].speeds[5]
-                      + tmp_cells[ii + jj*params.nx].speeds[6]
-                      + tmp_cells[ii + jj*params.nx].speeds[7]
-                      + tmp_cells[ii + jj*params.nx].speeds[8];                          
+        float local_density = 0.f;                 
         
-        /*for (int kk = 0; kk < NSPEEDS; kk++)
+        for (int kk = 0; kk < NSPEEDS; kk++)
         {
           local_density += tmp_cells[ii + jj*params.nx].speeds[kk];
-        }*/
+        }
 
         /* compute x velocity component */
         float u_x = (tmp_cells[ii + jj*params.nx].speeds[1]
@@ -352,33 +348,33 @@ int reboundCollisionAVVels(const t_param params, t_speed* cells, t_speed* tmp_ce
         float d_equ[NSPEEDS];
         /* zero velocity density: weight w0 */
         d_equ[0] = w0 * local_density
-                   * (1.f - u_sq / (2.f * c_sq));
+                   * (1.f - u_sq / (c_sq_2f));
         /* axis speeds: weight w1 */
         d_equ[1] = w1 * local_density * (1.f + u[1] / c_sq
-                                         + (u[1] * u[1]) / (2.f * c_sq * c_sq)
-                                         - u_sq / (2.f * c_sq));
+                                         + (u[1] * u[1]) / (c_sq_sq_2f)
+                                         - u_sq / (c_sq_2f));
         d_equ[2] = w1 * local_density * (1.f + u[2] / c_sq
-                                         + (u[2] * u[2]) / (2.f * c_sq * c_sq)
-                                         - u_sq / (2.f * c_sq));
+                                         + (u[2] * u[2]) / (c_sq_sq_2f)
+                                         - u_sq / (c_sq_2f));
         d_equ[3] = w1 * local_density * (1.f + u[3] / c_sq
-                                         + (u[3] * u[3]) / (2.f * c_sq * c_sq)
-                                         - u_sq / (2.f * c_sq));
+                                         + (u[3] * u[3]) / (c_sq_sq_2f)
+                                         - u_sq / (c_sq_2f));
         d_equ[4] = w1 * local_density * (1.f + u[4] / c_sq
-                                         + (u[4] * u[4]) / (2.f * c_sq * c_sq)
-                                         - u_sq / (2.f * c_sq));
+                                         + (u[4] * u[4]) / (c_sq_sq_2f)
+                                         - u_sq / (c_sq_2f));
         /* diagonal speeds: weight w2 */
         d_equ[5] = w2 * local_density * (1.f + u[5] / c_sq
-                                         + (u[5] * u[5]) / (2.f * c_sq * c_sq)
-                                         - u_sq / (2.f * c_sq));
+                                         + (u[5] * u[5]) / (c_sq_sq_2f)
+                                         - u_sq / (c_sq_2f));
         d_equ[6] = w2 * local_density * (1.f + u[6] / c_sq
-                                         + (u[6] * u[6]) / (2.f * c_sq * c_sq)
-                                         - u_sq / (2.f * c_sq));
+                                         + (u[6] * u[6]) / (c_sq_sq_2f)
+                                         - u_sq / (c_sq_2f));
         d_equ[7] = w2 * local_density * (1.f + u[7] / c_sq
-                                         + (u[7] * u[7]) / (2.f * c_sq * c_sq)
-                                         - u_sq / (2.f * c_sq));
+                                         + (u[7] * u[7]) / (c_sq_sq_2f)
+                                         - u_sq / (c_sq_2f));
         d_equ[8] = w2 * local_density * (1.f + u[8] / c_sq
-                                         + (u[8] * u[8]) / (2.f * c_sq * c_sq)
-                                         - u_sq / (2.f * c_sq));
+                                         + (u[8] * u[8]) / (c_sq_sq_2f)
+                                         - u_sq / (c_sq_2f));
 
         /* relaxation step */
         for (int kk = 0; kk < NSPEEDS; kk++)
