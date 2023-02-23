@@ -78,7 +78,7 @@ typedef struct
   float speeds[NSPEEDS];
 } t_speed;
 
-typedef struct
+/*typedef struct
 {
   float speeds0[];
   float speeds1[];
@@ -89,7 +89,7 @@ typedef struct
   float speeds6[];
   float speeds7[];
   float speeds8[]
-} speed_cells;
+} speed_cells;*/
 
 /*
 ** function prototypes
