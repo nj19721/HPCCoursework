@@ -61,7 +61,6 @@
 #define NSPEEDS         9
 #define FINALSTATEFILE  "final_state.dat"
 #define AVVELSFILE      "av_vels.dat"
-#define OMP_NUM_THREADS = 8
 
 /* struct to hold the parameter values */
 typedef struct
@@ -642,6 +641,7 @@ float total_density(const t_param params, t_speed* cells)
 {
   float total = 0.f;  /* accumulator */
 
+  #pragma omp for collapse(2)
   for (int jj = 0; jj < params.ny; jj++)
   {
     for (int ii = 0; ii < params.nx; ii++)
