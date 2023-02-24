@@ -61,7 +61,7 @@
 #define NSPEEDS         9
 #define FINALSTATEFILE  "final_state.dat"
 #define AVVELSFILE      "av_vels.dat"
-#define OMP_NUM_THREADS = 16
+#define OMP_NUM_THREADS = 8
 
 /* struct to hold the parameter values */
 typedef struct
@@ -285,7 +285,7 @@ int reboundCollisionAVVels(const t_param params, t_speed* cells, t_speed* tmp_ce
   ** NB the collision step is called after
   ** the propagate step and so values of interest
   ** are in the scratch-space grid */
-  #pragma omp parallel for collapse(2)
+  #pragma omp parallel for collapse(2) reduction(+:tot_cells)
   for (int jj = 0; jj < params.ny; jj++)
   {
     for (int ii = 0; ii < params.nx; ii++)
