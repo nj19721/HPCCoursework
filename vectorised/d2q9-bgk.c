@@ -92,15 +92,7 @@ typedef struct
 
 typedef struct 
 {
-  float* grid_cells_speed0;
-  float* grid_cells_speed1;
-  float* grid_cells_speed2;
-  float* grid_cells_speed3;
-  float* grid_cells_speed4;
-  float* grid_cells_speed5;
-  float* grid_cells_speed6;
-  float* grid_cells_speed7;
-  float* grid_cells_speed8;
+  float* grid_cells_speed[NSPEEDS];
 } speed_arrays;
 
 
@@ -605,29 +597,17 @@ int initialise(const char* paramfile, const char* obstaclefile, t_param* params,
   
   *speed_arrays_ptr = (speed_arrays*)malloc(sizeof(float)*(params->ny * params->nx)*NSPEEDS);
 
-  (*speed_arrays_ptr)->grid_cells_speed0 = (float*)malloc(params->ny * params->nx);
-  (*speed_arrays_ptr)->grid_cells_speed1 = (float*)malloc(params->ny * params->nx);
-  (*speed_arrays_ptr)->grid_cells_speed2 = (float*)malloc(params->ny * params->nx);
-  (*speed_arrays_ptr)->grid_cells_speed3 = (float*)malloc(params->ny * params->nx);
-  (*speed_arrays_ptr)->grid_cells_speed4 = (float*)malloc(params->ny * params->nx);
-  (*speed_arrays_ptr)->grid_cells_speed5 = (float*)malloc(params->ny * params->nx);
-  (*speed_arrays_ptr)->grid_cells_speed6 = (float*)malloc(params->ny * params->nx);
-  (*speed_arrays_ptr)->grid_cells_speed7 = (float*)malloc(params->ny * params->nx);
-  (*speed_arrays_ptr)->grid_cells_speed8 = (float*)malloc(params->ny * params->nx);
+  for(int x = 0; x < NSPEEDS; x++){
+    (*speed_arrays_ptr)[x] = (float*)malloc(params->ny * params->nx);
+  }
 
   if (*speed_arrays_ptr == NULL) die("cannot allocate memory for cells", __LINE__, __FILE__);
 
   *tmp_speed_arrays_ptr = (speed_arrays*)malloc(sizeof(float)*(params->ny * params->nx)*NSPEEDS);
 
-  (*tmp_speed_arrays_ptr)->grid_cells_speed0 = (float*)malloc(params->ny * params->nx);
-  (*tmp_speed_arrays_ptr)->grid_cells_speed1 = (float*)malloc(params->ny * params->nx);
-  (*tmp_speed_arrays_ptr)->grid_cells_speed2 = (float*)malloc(params->ny * params->nx);
-  (*tmp_speed_arrays_ptr)->grid_cells_speed3 = (float*)malloc(params->ny * params->nx);
-  (*tmp_speed_arrays_ptr)->grid_cells_speed4 = (float*)malloc(params->ny * params->nx);
-  (*tmp_speed_arrays_ptr)->grid_cells_speed5 = (float*)malloc(params->ny * params->nx);
-  (*tmp_speed_arrays_ptr)->grid_cells_speed6 = (float*)malloc(params->ny * params->nx);
-  (*tmp_speed_arrays_ptr)->grid_cells_speed7 = (float*)malloc(params->ny * params->nx);
-  (*tmp_speed_arrays_ptr)->grid_cells_speed8 = (float*)malloc(params->ny * params->nx);
+  for(int x = 0; x < NSPEEDS; x++){
+    (*tmp_speed_arrays_ptr)[x] = (float*)malloc(params->ny * params->nx);
+  }
 
   if (*tmp_speed_arrays_ptr == NULL) die("cannot allocate memory for cells", __LINE__, __FILE__);
 
@@ -719,8 +699,31 @@ int finalise(const t_param* params, int** obstacles_ptr,
   free(*av_vels_ptr);
   *av_vels_ptr = NULL;
 
-  //free(*speed_arrays_ptr)
-  //*speed_arrays_ptr = NULL;
+  free((*speed_arrays_ptr)->grid_cells_speed0);
+  free((*speed_arrays_ptr)->grid_cells_speed1);
+  free((*speed_arrays_ptr)->grid_cells_speed2);
+  free((*speed_arrays_ptr)->grid_cells_speed3);
+  free((*speed_arrays_ptr)->grid_cells_speed4);
+  free((*speed_arrays_ptr)->grid_cells_speed5);
+  free((*speed_arrays_ptr)->grid_cells_speed6);
+  free((*speed_arrays_ptr)->grid_cells_speed7);
+  free((*speed_arrays_ptr)->grid_cells_speed8);
+
+  free(*speed_arrays_ptr);
+  *speed_arrays_ptr = NULL;
+
+  free((*tmp_speed_arrays_ptr)->grid_cells_speed0);
+  free((*tmp_speed_arrays_ptr)->grid_cells_speed1);
+  free((*tmp_speed_arrays_ptr)->grid_cells_speed2);
+  free((*tmp_speed_arrays_ptr)->grid_cells_speed3);
+  free((*tmp_speed_arrays_ptr)->grid_cells_speed4);
+  free((*tmp_speed_arrays_ptr)->grid_cells_speed5);
+  free((*tmp_speed_arrays_ptr)->grid_cells_speed6);
+  free((*tmp_speed_arrays_ptr)->grid_cells_speed7);
+  free((*tmp_speed_arrays_ptr)->grid_cells_speed8);
+
+  free(*tmp_speed_arrays_ptr);
+  *tmp_speed_arrays_ptr = NULL;
 
   return EXIT_SUCCESS;
 }
