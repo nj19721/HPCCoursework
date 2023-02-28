@@ -206,7 +206,7 @@ int accelerate_flow(const t_param params, t_speed* restrict cells, int* obstacle
   /* modify the 2nd row of the grid */
   const int jj = params.ny - 2;
   
-  //#pragma omp simd
+  #pragma omp simd
   for (int ii = 0; ii < params.nx; ii++)
   {
     /* if the cell is not occupied and
@@ -283,6 +283,7 @@ int reboundCollisionAVVels(const t_param params, t_speed* restrict cells, t_spee
   ** NB the collision step is called after
   ** the propagate step and so values of interest
   ** are in the scratch-space grid */
+
   //#pragma omp simd
   for (int jj = 0; jj < params.ny; jj++)
   {
