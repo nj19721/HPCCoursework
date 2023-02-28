@@ -519,19 +519,19 @@ int initialise(const char* paramfile, const char* obstaclefile,
   */
 
   /* main grid */
-  *cells_ptr = (t_speed*)malloc(sizeof(t_speed) * (params->ny * params->nx) * NSPEEDS);
+  *cells_ptr = (t_speed*)mm_malloc(sizeof(t_speed) * (params->ny * params->nx) * NSPEEDS);
 
   for(int kk = 0; kk < NSPEEDS; kk++){
-    (*cells_ptr)->speeds[kk] = (float*)malloc(sizeof(float) * params->ny * params->nx);
+    (*cells_ptr)->speeds[kk] = (float*)mm_malloc(sizeof(float) * params->ny * params->nx);
   }
 
   if (*cells_ptr == NULL) die("cannot allocate memory for cells", __LINE__, __FILE__);
 
   /* 'helper' grid, used as scratch space */
-  *tmp_cells_ptr = (t_speed*)malloc(sizeof(t_speed) * (params->ny * params->nx) * NSPEEDS);
+  *tmp_cells_ptr = (t_speed*)mm_malloc(sizeof(t_speed) * (params->ny * params->nx) * NSPEEDS);
 
   for(int kk = 0; kk < NSPEEDS; kk++){
-    (*tmp_cells_ptr)->speeds[kk] = (float*)malloc(sizeof(float) * params->ny * params->nx);
+    (*tmp_cells_ptr)->speeds[kk] = (float*)mm_malloc(sizeof(float) * params->ny * params->nx);
   }
 
   if (*tmp_cells_ptr == NULL) die("cannot allocate memory for tmp_cells", __LINE__, __FILE__);
