@@ -384,6 +384,7 @@ int reboundCollisionAVVels(const t_param params, t_speed* restrict cells, t_spee
     }
   }
 
+  #pragma omp simd aligned(cells) aligned(tmp_cells)
   for (int jj = 0; jj < params.ny; jj++)
   {
     for (int ii = 0; ii < params.nx; ii++)
@@ -416,7 +417,7 @@ float av_velocity(const t_param params, t_speed* restrict cells, int* obstacles)
   tot_u = 0.f;
 
   /* loop over all non-blocked cells */
-  #pragma omp simd aligned(cells) private(tot_cells) private(tot_u)
+  //#pragma omp simd aligned(cells) private(tot_cells) private(tot_u)
   for (int jj = 0; jj < params.ny; jj++)
   {
     for (int ii = 0; ii < params.nx; ii++)
