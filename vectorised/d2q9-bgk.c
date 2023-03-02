@@ -289,7 +289,7 @@ int reboundCollisionAVVels(const t_param params, t_speed* restrict cells, t_spee
   ** the propagate step and so values of interest
   ** are in the scratch-space grid */
 
-  #pragma omp simd aligned(cells) aligned(tmp_cells) firstprivate(cells) lastprivate(tmp_cells)
+  #pragma omp simd aligned(cells) aligned(tmp_cells) lastprivate(cells) lastprivate(tmp_cells)
   for (int jj = 0; jj < params.ny; jj++)
   {
     for (int ii = 0; ii < params.nx; ii++)
