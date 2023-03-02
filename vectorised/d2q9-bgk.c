@@ -299,7 +299,7 @@ int reboundCollisionAVVels(const t_param params, t_speed* restrict cells, t_spee
       /*if (obstacles[jj*params.nx + ii])
       {
         // called after propagate, so taking values from scratch space
-        //** mirroring, and writing into main grid
+        // mirroring, and writing into main grid
         cells->speeds[1][ii + jj*params.nx] = tmp_cells->speeds[3][ii + jj*params.nx];
         cells->speeds[2][ii + jj*params.nx] = tmp_cells->speeds[4][ii + jj*params.nx];
         cells->speeds[3][ii + jj*params.nx] = tmp_cells->speeds[1][ii + jj*params.nx];
@@ -399,7 +399,7 @@ int reboundCollisionAVVels(const t_param params, t_speed* restrict cells, t_spee
     }
   }
 
-  //#pragma omp simd aligned(cells) aligned(tmp_cells)
+  #pragma omp simd aligned(cells) aligned(tmp_cells)
   for (int jj = 0; jj < params.ny; jj++)
   {
     for (int ii = 0; ii < params.nx; ii++)
