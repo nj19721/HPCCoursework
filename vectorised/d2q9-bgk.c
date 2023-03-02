@@ -206,7 +206,7 @@ int accelerate_flow(const t_param params, t_speed* restrict cells, int* obstacle
   /* modify the 2nd row of the grid */
   const int jj = params.ny - 2;
   
-  //#pragma omp simd
+  #pragma omp simd
   for (int ii = 0; ii < params.nx; ii++)
   {
     /* if the cell is not occupied and
@@ -233,7 +233,7 @@ int accelerate_flow(const t_param params, t_speed* restrict cells, int* obstacle
 int propagate(const t_param params, t_speed* restrict cells, t_speed* restrict tmp_cells)
 {
   /* loop over _all_ cells */
-  //#pragma omp simd
+  #pragma omp simd
   for (int jj = 0; jj < params.ny; jj++)
   {
     for (int ii = 0; ii < params.nx; ii++)
@@ -289,7 +289,7 @@ int reboundCollisionAVVels(const t_param params, t_speed* restrict cells, t_spee
   ** the propagate step and so values of interest
   ** are in the scratch-space grid */
 
-  #pragma omp simd collapse(2) aligned(cells) aligned(tmp_cells) private(tot_cells) private(tot_u)
+  #pragma omp simd aligned(cells) aligned(tmp_cells) private(tot_cells) private(tot_u)
   for (int jj = 0; jj < params.ny; jj++)
   {
     for (int ii = 0; ii < params.nx; ii++)
@@ -557,7 +557,7 @@ int initialise(const char* paramfile, const char* obstaclefile,
   float w1 = params->density      / 9.f;
   float w2 = params->density      / 36.f;
   
-  //#pragma omp simd
+  #pragma omp simd
   for (int jj = 0; jj < params->ny; jj++)
   {
     for (int ii = 0; ii < params->nx; ii++)
@@ -656,7 +656,7 @@ float total_density(const t_param params, t_speed* restrict cells)
 {
   float total = 0.f;  /* accumulator */
 
-  //#pragma omp simd
+  #pragma omp simd
   for (int jj = 0; jj < params.ny; jj++)
   {
     for (int ii = 0; ii < params.nx; ii++)
