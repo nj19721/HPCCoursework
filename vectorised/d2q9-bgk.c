@@ -206,7 +206,7 @@ int accelerate_flow(const t_param params, t_speed* restrict cells, int* obstacle
   /* modify the 2nd row of the grid */
   const int jj = params.ny - 2;
   
-  #pragma omp simd
+  //#pragma omp simd
   for (int ii = 0; ii < params.nx; ii++)
   {
     /* if the cell is not occupied and
@@ -296,10 +296,10 @@ int reboundCollisionAVVels(const t_param params, t_speed* restrict cells, t_spee
     {
       /* determine indices of axis-direction neighbours
       ** respecting periodic boundary conditions (wrap around) */
-     if (obstacles[jj*params.nx + ii])
+      /*if (obstacles[jj*params.nx + ii])
       {
-        /* called after propagate, so taking values from scratch space
-        ** mirroring, and writing into main grid */
+        // called after propagate, so taking values from scratch space
+        //** mirroring, and writing into main grid
         cells->speeds[1][ii + jj*params.nx] = tmp_cells->speeds[3][ii + jj*params.nx];
         cells->speeds[2][ii + jj*params.nx] = tmp_cells->speeds[4][ii + jj*params.nx];
         cells->speeds[3][ii + jj*params.nx] = tmp_cells->speeds[1][ii + jj*params.nx];
@@ -310,7 +310,7 @@ int reboundCollisionAVVels(const t_param params, t_speed* restrict cells, t_spee
         cells->speeds[8][ii + jj*params.nx] = tmp_cells->speeds[6][ii + jj*params.nx];
       }
       else{
-
+      */
       /* don't consider occupied cells */
       /* compute local density total */
 
@@ -395,19 +395,17 @@ int reboundCollisionAVVels(const t_param params, t_speed* restrict cells, t_spee
         tot_u += sqrtf((u_x * u_x) + (u_y * u_y));
         /* increase counter of inspected cells */
         ++tot_cells;
-      }
+      //}
     }
   }
 
-  /*#pragma omp simd aligned(cells) aligned(tmp_cells)
+  //#pragma omp simd aligned(cells) aligned(tmp_cells)
   for (int jj = 0; jj < params.ny; jj++)
   {
     for (int ii = 0; ii < params.nx; ii++)
     {
       if (obstacles[jj*params.nx + ii])
       {
-        /* called after propagate, so taking values from scratch space
-        ** mirroring, and writing into main grid
         cells->speeds[1][ii + jj*params.nx] = tmp_cells->speeds[3][ii + jj*params.nx];
         cells->speeds[2][ii + jj*params.nx] = tmp_cells->speeds[4][ii + jj*params.nx];
         cells->speeds[3][ii + jj*params.nx] = tmp_cells->speeds[1][ii + jj*params.nx];
@@ -418,7 +416,7 @@ int reboundCollisionAVVels(const t_param params, t_speed* restrict cells, t_spee
         cells->speeds[8][ii + jj*params.nx] = tmp_cells->speeds[6][ii + jj*params.nx];
       }
     }
-  }*/
+  }
 
   return tot_u / (float)tot_cells;
 }
