@@ -264,6 +264,11 @@ int propagate(const t_param params, t_speed* restrict cells, t_speed* restrict t
 
 int reboundCollisionAVVels(const t_param params, t_speed* restrict cells, t_speed* restrict tmp_cells, int* obstacles)
 {
+  __assume_aligned(cells, 64);
+  __assume_aligned(tmp_cells, 64);
+  __assume((params.nx)%2==0);
+  __assume((params.ny)%2==0);
+  
   const float c_sq = 1.f / 3.f; /* square of speed of sound */
   const float w0 = 4.f / 9.f;  /* weighting factor */
   const float w1 = 1.f / 9.f;  /* weighting factor */
