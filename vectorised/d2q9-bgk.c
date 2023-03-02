@@ -284,12 +284,14 @@ int reboundCollisionAVVels(const t_param params, t_speed* restrict cells, t_spee
   /* initialise */
   tot_u = 0.f;
 
+  float local_density; 
+
   /* loop over the cells in the grid
   ** NB the collision step is called after
   ** the propagate step and so values of interest
   ** are in the scratch-space grid */
 
-  #pragma omp simd aligned(cells) aligned(tmp_cells) lastprivate(cells) lastprivate(tmp_cells)
+  #pragma omp simd aligned(cells) aligned(tmp_cells) 
   for (int jj = 0; jj < params.ny; jj++)
   {
     for (int ii = 0; ii < params.nx; ii++)
@@ -299,7 +301,8 @@ int reboundCollisionAVVels(const t_param params, t_speed* restrict cells, t_spee
 
       /* don't consider occupied cells */
       /* compute local density total */
-      float local_density = 0.f;                 
+
+      local_density = 0.f;                
       
       for (int kk = 0; kk < NSPEEDS; kk++)
       {
