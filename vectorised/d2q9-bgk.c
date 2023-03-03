@@ -233,10 +233,10 @@ int accelerate_flow(const t_param params, t_speed* restrict cells, int* obstacle
 int propagate(const t_param params, t_speed* restrict cells, t_speed* restrict tmp_cells)
 {
   /* loop over _all_ cells */
-  #pragma omp simd
+  #pragma omp simd collapse(2)
   for (int jj = 0; jj < params.ny; jj++)
   {
-    #pragma omp simd
+    //#pragma omp simd
     for (int ii = 0; ii < params.nx; ii++)
     {
       /* determine indices of axis-direction neighbours
@@ -290,10 +290,9 @@ int reboundCollisionAVVels(const t_param params, t_speed* restrict cells, t_spee
   ** the propagate step and so values of interest
   ** are in the scratch-space grid */
 
-  #pragma omp simd aligned(cells) aligned(tmp_cells) reduction(+:tot_cells) reduction(+:tot_u)
+  #pragma omp simd collapse(2) aligned(cells) aligned(tmp_cells) reduction(+:tot_cells) reduction(+:tot_u)
   for (int jj = 0; jj < params.ny; jj++)
   {
-    #pragma omp simd aligned(cells) aligned(tmp_cells) private(tot_cells) private(tot_u)
     for (int ii = 0; ii < params.nx; ii++)
     {
       /* determine indices of axis-direction neighbours
@@ -401,10 +400,10 @@ int reboundCollisionAVVels(const t_param params, t_speed* restrict cells, t_spee
     }
   }
 
-  #pragma omp simd aligned(cells) aligned(tmp_cells)
+  #pragma omp simd collapse(2) aligned(cells) aligned(tmp_cells)
   for (int jj = 0; jj < params.ny; jj++)
   {
-    #pragma omp simd aligned(cells) aligned(tmp_cells)
+    //#pragma omp simd aligned(cells) aligned(tmp_cells)
     for (int ii = 0; ii < params.nx; ii++)
     {
       if (obstacles[jj*params.nx + ii])
@@ -579,10 +578,10 @@ int initialise(const char* paramfile, const char* obstaclefile,
   float w1 = params->density      / 9.f;
   float w2 = params->density      / 36.f;
   
-  #pragma omp simd
+  #pragma omp simd collapse(2)
   for (int jj = 0; jj < params->ny; jj++)
   {
-    #pragma omp simd
+    //#pragma omp simd
     for (int ii = 0; ii < params->nx; ii++)
     {
       /* centre */
@@ -679,10 +678,10 @@ float total_density(const t_param params, t_speed* restrict cells)
 {
   float total = 0.f;  /* accumulator */
 
-  #pragma omp simd
+  #pragma omp simd collapse(2)
   for (int jj = 0; jj < params.ny; jj++)
   {
-    #pragma omp simd
+    //#pragma omp simd
     for (int ii = 0; ii < params.nx; ii++)
     {
       for (int kk = 0; kk < NSPEEDS; kk++)
