@@ -279,8 +279,8 @@ int reboundCollisionAVVels(const t_param params, t_speed* restrict cells, t_spee
   const float c_sq_sq_2f = 2.f * c_sq * c_sq;
   const float c_sq_2f = 2.f * c_sq;
 
-  int restrict tot_cells = 0;  /* no. of cells used in calculation */
-  float restrict tot_u;          /* accumulated magnitudes of velocity for each cell */
+  int tot_cells = 0;  /* no. of cells used in calculation */
+  float tot_u;          /* accumulated magnitudes of velocity for each cell */
 
   /* initialise */
   tot_u = 0.f;
@@ -290,7 +290,7 @@ int reboundCollisionAVVels(const t_param params, t_speed* restrict cells, t_spee
   ** the propagate step and so values of interest
   ** are in the scratch-space grid */
 
-  #pragma omp simd aligned(cells) aligned(tmp_cells) private(tot_cells) private(tot_u)
+  #pragma omp simd aligned(cells) aligned(tmp_cells) reduction(+:tot_cells) reduction(+:tot_u)
   for (int jj = 0; jj < params.ny; jj++)
   {
     #pragma omp simd aligned(cells) aligned(tmp_cells)
