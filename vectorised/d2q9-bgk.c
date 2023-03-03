@@ -280,11 +280,11 @@ int reboundCollisionAVVels(const t_param params, t_speed* restrict cells, t_spee
   const float c_sq_2f = 2.f * c_sq;
 
   int* tot_cells = malloc(sizeof(int));  /* no. of cells used in calculation */
-  &tot_cells = 0;
+  *tot_cells = 0;
   float * tot_u = malloc(sizeof(float));          /* accumulated magnitudes of velocity for each cell */
 
   /* initialise */
-  &tot_u = 0.f;
+  *tot_u = 0.f;
 
   /* loop over the cells in the grid
   ** NB the collision step is called after
@@ -395,7 +395,7 @@ int reboundCollisionAVVels(const t_param params, t_speed* restrict cells, t_spee
                                                   * (d_equ[kk] - tmp_cells->speeds[kk][ii + jj*params.nx]);
         }
         /* accumulate the norm of x- and y- velocity components */
-        tot_u += sqrtf((u_x * u_x) + (u_y * u_y));
+        *tot_u += sqrtf((u_x * u_x) + (u_y * u_y));
         /* increase counter of inspected cells */
         ++tot_cells;
       //}
@@ -422,10 +422,10 @@ int reboundCollisionAVVels(const t_param params, t_speed* restrict cells, t_spee
     }
   }
 
-  float r = &tot_u / (float)&tot_cells;
+  float r = *tot_u / (float)*tot_cells;
 
-  free(tot_cells)
-  free(tot_u)
+  free(tot_cells);
+  free(tot_u);
 
   return r;
 }
