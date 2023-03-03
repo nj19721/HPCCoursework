@@ -236,6 +236,7 @@ int propagate(const t_param params, t_speed* restrict cells, t_speed* restrict t
   #pragma omp simd
   for (int jj = 0; jj < params.ny; jj++)
   {
+    #pragma omp simd
     for (int ii = 0; ii < params.nx; ii++)
     {
       /* determine indices of axis-direction neighbours
@@ -292,6 +293,7 @@ int reboundCollisionAVVels(const t_param params, t_speed* restrict cells, t_spee
   #pragma omp simd aligned(cells) aligned(tmp_cells) reduction(+:tot_cells) reduction(+:tot_u)
   for (int jj = 0; jj < params.ny; jj++)
   {
+    #pragma omp simd aligned(cells) aligned(tmp_cells)
     for (int ii = 0; ii < params.nx; ii++)
     {
       /* determine indices of axis-direction neighbours
@@ -402,6 +404,7 @@ int reboundCollisionAVVels(const t_param params, t_speed* restrict cells, t_spee
   #pragma omp simd aligned(cells) aligned(tmp_cells)
   for (int jj = 0; jj < params.ny; jj++)
   {
+    #pragma omp simd aligned(cells) aligned(tmp_cells)
     for (int ii = 0; ii < params.nx; ii++)
     {
       if (obstacles[jj*params.nx + ii])
@@ -437,6 +440,7 @@ float av_velocity(const t_param params, t_speed* restrict cells, int* obstacles)
   #pragma omp simd aligned(cells) private(tot_cells) private(tot_u)
   for (int jj = 0; jj < params.ny; jj++)
   {
+    #pragma omp simd
     for (int ii = 0; ii < params.nx; ii++)
     {
       /* ignore occupied cells */
@@ -578,6 +582,7 @@ int initialise(const char* paramfile, const char* obstaclefile,
   #pragma omp simd
   for (int jj = 0; jj < params->ny; jj++)
   {
+    #pragma omp simd
     for (int ii = 0; ii < params->nx; ii++)
     {
       /* centre */
@@ -677,6 +682,7 @@ float total_density(const t_param params, t_speed* restrict cells)
   #pragma omp simd
   for (int jj = 0; jj < params.ny; jj++)
   {
+    #pragma omp simd
     for (int ii = 0; ii < params.nx; ii++)
     {
       for (int kk = 0; kk < NSPEEDS; kk++)
