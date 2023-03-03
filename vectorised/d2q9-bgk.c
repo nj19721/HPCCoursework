@@ -279,18 +279,19 @@ int reboundCollisionAVVels(const t_param params, t_speed* restrict cells, t_spee
   const float c_sq_sq_2f = 2.f * c_sq * c_sq;
   const float c_sq_2f = 2.f * c_sq;
 
-  int tot_cells = 0;  /* no. of cells used in calculation */
-  float tot_u;          /* accumulated magnitudes of velocity for each cell */
+  int* tot_cells = malloc(sizeof(int));  /* no. of cells used in calculation */
+  &tot_cells = 0;
+  float * tot_u = malloc(sizeof(float));          /* accumulated magnitudes of velocity for each cell */
 
   /* initialise */
-  tot_u = 0.f;
+  &tot_u = 0.f;
 
   /* loop over the cells in the grid
   ** NB the collision step is called after
   ** the propagate step and so values of interest
   ** are in the scratch-space grid */
 
-  #pragma omp simd aligned(cells, tmp_cells) shared(tot_cells, tot_u)
+  #pragma omp simd aligned(cells, tmp_cells)
   for (int jj = 0; jj < params.ny; jj++)
   {
     #pragma omp simd aligned(cells, tmp_cells)
@@ -421,7 +422,12 @@ int reboundCollisionAVVels(const t_param params, t_speed* restrict cells, t_spee
     }
   }
 
-  return tot_u / (float)tot_cells;
+  float r = &tot_u / (float)&tot_cells;
+
+  free(tot_cells)
+  free(tot_u)
+
+  return r;
 }
 
 float av_velocity(const t_param params, t_speed* restrict cells, int* obstacles)
