@@ -289,7 +289,7 @@ int reboundCollisionAVVels(const t_param params, t_speed* restrict cells, t_spee
   ** the propagate step and so values of interest
   ** are in the scratch-space grid */
 
-  #pragma omp parallel for collapse(2) simd aligned(cells) aligned(tmp_cells) reduction(+:tot_cells) reduction(+:tot_u)
+  #pragma omp simd parallel for collapse(2) aligned(cells) aligned(tmp_cells) reduction(+:tot_cells) reduction(+:tot_u)
   for (int jj = 0; jj < params.ny; jj++)
   {
     for (int ii = 0; ii < params.nx; ii++)
