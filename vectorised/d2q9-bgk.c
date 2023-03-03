@@ -424,7 +424,6 @@ int reboundCollisionAVVels(const t_param params, t_speed* restrict cells, t_spee
 float av_velocity(const t_param params, t_speed* restrict cells, int* obstacles)
 {
   __assume_aligned(cells, 64);
-  __assume_aligned(tmp_cells, 64);
   __assume((params.nx)%2==0);
   __assume((params.ny)%2==0);
   
