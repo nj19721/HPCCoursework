@@ -279,8 +279,8 @@ int reboundCollisionAVVels(const t_param params, t_speed* restrict cells, t_spee
   const float c_sq_sq_2f = 2.f * c_sq * c_sq;
   const float c_sq_2f = 2.f * c_sq;
 
-  int    tot_cells = 0;  /* no. of cells used in calculation */
-  float tot_u;          /* accumulated magnitudes of velocity for each cell */
+  int restrict tot_cells = 0;  /* no. of cells used in calculation */
+  float restrict tot_u;          /* accumulated magnitudes of velocity for each cell */
 
   /* initialise */
   tot_u = 0.f;
