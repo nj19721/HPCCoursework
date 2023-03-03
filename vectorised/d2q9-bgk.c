@@ -423,6 +423,11 @@ int reboundCollisionAVVels(const t_param params, t_speed* restrict cells, t_spee
 
 float av_velocity(const t_param params, t_speed* restrict cells, int* obstacles)
 {
+  __assume_aligned(cells, 64);
+  __assume_aligned(tmp_cells, 64);
+  __assume((params.nx)%2==0);
+  __assume((params.ny)%2==0);
+  
   int    tot_cells = 0;  /* no. of cells used in calculation */
   float tot_u;          /* accumulated magnitudes of velocity for each cell */
 
@@ -430,7 +435,7 @@ float av_velocity(const t_param params, t_speed* restrict cells, int* obstacles)
   tot_u = 0.f;
 
   /* loop over all non-blocked cells */
-  //#pragma omp simd aligned(cells) private(tot_cells) private(tot_u)
+  #pragma omp simd aligned(cells) private(tot_cells) private(tot_u)
   for (int jj = 0; jj < params.ny; jj++)
   {
     for (int ii = 0; ii < params.nx; ii++)
