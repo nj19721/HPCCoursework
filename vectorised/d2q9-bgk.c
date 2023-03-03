@@ -293,7 +293,7 @@ int reboundCollisionAVVels(const t_param params, t_speed* restrict cells, t_spee
   #pragma omp simd aligned(cells) aligned(tmp_cells) reduction(+:tot_cells) reduction(+:tot_u)
   for (int jj = 0; jj < params.ny; jj++)
   {
-    #pragma omp simd aligned(cells) aligned(tmp_cells)
+    #pragma omp simd aligned(cells) aligned(tmp_cells) private(tot_cells) private(tot_u)
     for (int ii = 0; ii < params.nx; ii++)
     {
       /* determine indices of axis-direction neighbours
