@@ -579,7 +579,6 @@ int initialise(const char* paramfile, const char* obstaclefile,
   #pragma omp parallel for simd collapse(2)
   for (int jj = 0; jj < params->ny; jj++)
   {
-    #pragma omp simd
     for (int ii = 0; ii < params->nx; ii++)
     {
       /* centre */
