@@ -296,7 +296,7 @@ int reboundCollisionAVVels(const t_param params, t_speed* restrict cells, t_spee
     {
       /* determine indices of axis-direction neighbours
       ** respecting periodic boundary conditions (wrap around) */
-      /*if (obstacles[jj*params.nx + ii])
+      if (obstacles[jj*params.nx + ii])
       {
         // called after propagate, so taking values from scratch space
         // mirroring, and writing into main grid
@@ -310,7 +310,7 @@ int reboundCollisionAVVels(const t_param params, t_speed* restrict cells, t_spee
         cells->speeds[8][ii + jj*params.nx] = tmp_cells->speeds[6][ii + jj*params.nx];
       }
       else{
-      */
+      
       /* don't consider occupied cells */
       /* compute local density total */
 
@@ -399,7 +399,7 @@ int reboundCollisionAVVels(const t_param params, t_speed* restrict cells, t_spee
     }
   }
 
-  #pragma omp parallel for simd collapse(2) aligned(cells) aligned(tmp_cells)
+  /*#pragma omp parallel for simd collapse(2) aligned(cells) aligned(tmp_cells)
   for (int jj = 0; jj < params.ny; jj++)
   {
     for (int ii = 0; ii < params.nx; ii++)
@@ -416,7 +416,7 @@ int reboundCollisionAVVels(const t_param params, t_speed* restrict cells, t_spee
         cells->speeds[8][ii + jj*params.nx] = tmp_cells->speeds[6][ii + jj*params.nx];
       }
     }
-  }
+  }*/
 
   return tot_u / (float)tot_cells;
 }
