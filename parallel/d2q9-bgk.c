@@ -392,7 +392,7 @@ int reboundCollisionAVVels(const t_param params, t_speed* cells, t_speed* tmp_ce
         tot_u += sqrtf((u_x * u_x) + (u_y * u_y));
         /* increase counter of inspected cells */
         ++tot_cells;
-      }
+      //}
     }
   }
 
