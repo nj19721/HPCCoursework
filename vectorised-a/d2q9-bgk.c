@@ -395,7 +395,7 @@ int reboundCollisionAVVels(const t_param params, t_speed* restrict cells, t_spee
         tot_u += sqrtf((u_x * u_x) + (u_y * u_y));
         /* increase counter of inspected cells */
         ++tot_cells;
-      //}
+      }
     }
   }
 
