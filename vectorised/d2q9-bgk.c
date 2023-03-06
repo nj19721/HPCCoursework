@@ -205,6 +205,8 @@ int accelerate_flow(const t_param params, t_speed* restrict cells, int* obstacle
 
   /* modify the 2nd row of the grid */
   const int jj = params.ny - 2;
+
+  __assume((params.nx)%2==0);
   
   #pragma omp simd
   for (int ii = 0; ii < params.nx; ii++)
@@ -233,6 +235,9 @@ int accelerate_flow(const t_param params, t_speed* restrict cells, int* obstacle
 int propagate(const t_param params, t_speed* restrict cells, t_speed* restrict tmp_cells)
 {
   /* loop over _all_ cells */
+  __assume((params.nx)%2==0);
+  __assume((params.ny)%2==0);
+
   #pragma omp simd
   for (int jj = 0; jj < params.ny; jj++)
   {
@@ -578,6 +583,9 @@ int initialise(const char* paramfile, const char* obstaclefile,
   float w0 = params->density * 4.f / 9.f;
   float w1 = params->density      / 9.f;
   float w2 = params->density      / 36.f;
+
+  __assume((params.nx)%2==0);
+  __assume((params.ny)%2==0);
   
   #pragma omp simd
   for (int jj = 0; jj < params->ny; jj++)
