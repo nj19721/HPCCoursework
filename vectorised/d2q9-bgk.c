@@ -301,7 +301,9 @@ int reboundCollisionAVVels(const t_param params, t_speed* restrict cells, t_spee
   #pragma omp simd aligned(cells, tmp_cells) private(tot_cells, tot_u)
   for (int jj = 0; jj < params.ny; jj++)
   {
-    //#pragma omp simd
+    float tmp_tot_u = 0.f;
+    int tmp_tot_cells = 0;
+    #pragma omp simd aligned(cells, tmp_cells) private(tmp_tot_cells, tmp_tot_u)
     for (int ii = 0; ii < params.nx; ii++)
     {
       /* determine indices of axis-direction neighbours
@@ -402,11 +404,13 @@ int reboundCollisionAVVels(const t_param params, t_speed* restrict cells, t_spee
                                                   * (d_equ[kk] - tmp_cells->speeds[kk][ii + jj*params.nx]);
         }
         /* accumulate the norm of x- and y- velocity components */
-        tot_u += sqrtf((u_x * u_x) + (u_y * u_y));
+        tmp_tot_u += sqrtf((u_x * u_x) + (u_y * u_y));
         /* increase counter of inspected cells */
-        ++tot_cells;
+        ++tmp_tot_cells;
       //}
     }
+    tot_u = tot_u + tmp_tot_u;
+    tot_cells = tot_cells + tmp_tot_cells;
   }
 
   #pragma omp simd aligned(cells) aligned(tmp_cells)
