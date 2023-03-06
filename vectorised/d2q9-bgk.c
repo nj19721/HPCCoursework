@@ -583,9 +583,6 @@ int initialise(const char* paramfile, const char* obstaclefile,
   float w0 = params->density * 4.f / 9.f;
   float w1 = params->density      / 9.f;
   float w2 = params->density      / 36.f;
-
-  __assume((params.nx)%2==0);
-  __assume((params.ny)%2==0);
   
   #pragma omp simd
   for (int jj = 0; jj < params->ny; jj++)
