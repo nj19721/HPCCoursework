@@ -194,13 +194,13 @@ int timestep(const t_param params, t_speed* cells, t_speed* tmp_cells, int* obst
   accelerate_flow(params, cells, obstacles);
   propagate(params, cells, tmp_cells);
   float avVel = reboundCollisionAVVels(params, cells, tmp_cells, obstacles);
-  t_speed* temp = tmp_cells;
-  tmp_cells = cells;
-  cells = temp;
+  //t_speed* temp = tmp_cells;
+  //tmp_cells = cells;
+  //cells = temp;
   return avVel;
 }
 
-int accelerate_flow(const t_param params, t_speed* restrict tmp_cells, int* obstacles)
+int accelerate_flow(const t_param params, t_speed* restrict cells, int* obstacles)
 {
   /* compute weighting factors */
   const float w1 = params.density * params.accel / 9.f;
@@ -213,7 +213,7 @@ int accelerate_flow(const t_param params, t_speed* restrict tmp_cells, int* obst
   __assume((params.nx)%4==0);
   __assume((params.nx)%8==0);
   __assume((params.nx)%16==0);
-  __assume_aligned(tmp_cells, 64);
+  __assume_aligned(cells, 64);
   
   #pragma omp simd
   for (int ii = 0; ii < params.nx; ii++)
@@ -221,18 +221,18 @@ int accelerate_flow(const t_param params, t_speed* restrict tmp_cells, int* obst
     /* if the cell is not occupied and
     ** we don't send a negative density */
     if (!obstacles[ii + jj*params.nx]
-        && (tmp_cells->speeds[3][ii + jj*params.nx] - w1) > 0.f
-        && (tmp_cells->speeds[6][ii + jj*params.nx] - w2) > 0.f
-        && (tmp_cells->speeds[7][ii + jj*params.nx] - w2) > 0.f)
+        && (cells->speeds[3][ii + jj*params.nx] - w1) > 0.f
+        && (cells->speeds[6][ii + jj*params.nx] - w2) > 0.f
+        && (cells->speeds[7][ii + jj*params.nx] - w2) > 0.f)
     {
       /* increase 'east-side' densities */
-      tmp_cells->speeds[1][ii + jj*params.nx] += w1;
-      tmp_cells->speeds[5][ii + jj*params.nx] += w2;
-      tmp_cells->speeds[8][ii + jj*params.nx] += w2;
+      cells->speeds[1][ii + jj*params.nx] += w1;
+      cells->speeds[5][ii + jj*params.nx] += w2;
+      cells->speeds[8][ii + jj*params.nx] += w2;
       /* decrease 'west-side' densities */
-      tmp_cells->speeds[3][ii + jj*params.nx] -= w1;
-      tmp_cells->speeds[6][ii + jj*params.nx] -= w2;
-      tmp_cells->speeds[7][ii + jj*params.nx] -= w2;
+      cells->speeds[3][ii + jj*params.nx] -= w1;
+      cells->speeds[6][ii + jj*params.nx] -= w2;
+      cells->speeds[7][ii + jj*params.nx] -= w2;
     }
   }
 
@@ -268,15 +268,15 @@ int propagate(const t_param params, t_speed* restrict cells, t_speed* restrict t
       /* propagate densities from neighbouring cells, following
       ** appropriate directions of travel and writing into
       ** scratch space grid */
-      tmp_cells->speeds[0][ii + jj*params.nx] = tmp_cells->speeds[0][ii + jj*params.nx]; /* central cell, no movement */
-      tmp_cells->speeds[1][ii + jj*params.nx] = tmp_cells->speeds[1][x_w + jj*params.nx]; /* east */
-      tmp_cells->speeds[2][ii + jj*params.nx] = tmp_cells->speeds[2][ii + y_s*params.nx]; /* north */
-      tmp_cells->speeds[3][ii + jj*params.nx] = tmp_cells->speeds[3][x_e + jj*params.nx]; /* west */
-      tmp_cells->speeds[4][ii + jj*params.nx] = tmp_cells->speeds[4][ii + y_n*params.nx]; /* south */
-      tmp_cells->speeds[5][ii + jj*params.nx] = tmp_cells->speeds[5][x_w + y_s*params.nx]; /* north-east */
-      tmp_cells->speeds[6][ii + jj*params.nx] = tmp_cells->speeds[6][x_e + y_s*params.nx]; /* north-west */
-      tmp_cells->speeds[7][ii + jj*params.nx] = tmp_cells->speeds[7][x_e + y_n*params.nx]; /* south-west */
-      tmp_cells->speeds[8][ii + jj*params.nx] = tmp_cells->speeds[8][x_w + y_n*params.nx]; /* south-east */
+      tmp_cells->speeds[0][ii + jj*params.nx] = cells->speeds[0][ii + jj*params.nx]; /* central cell, no movement */
+      tmp_cells->speeds[1][ii + jj*params.nx] = cells->speeds[1][x_w + jj*params.nx]; /* east */
+      tmp_cells->speeds[2][ii + jj*params.nx] = cells->speeds[2][ii + y_s*params.nx]; /* north */
+      tmp_cells->speeds[3][ii + jj*params.nx] = cells->speeds[3][x_e + jj*params.nx]; /* west */
+      tmp_cells->speeds[4][ii + jj*params.nx] = cells->speeds[4][ii + y_n*params.nx]; /* south */
+      tmp_cells->speeds[5][ii + jj*params.nx] = cells->speeds[5][x_w + y_s*params.nx]; /* north-east */
+      tmp_cells->speeds[6][ii + jj*params.nx] = cells->speeds[6][x_e + y_s*params.nx]; /* north-west */
+      tmp_cells->speeds[7][ii + jj*params.nx] = cells->speeds[7][x_e + y_n*params.nx]; /* south-west */
+      tmp_cells->speeds[8][ii + jj*params.nx] = cells->speeds[8][x_w + y_n*params.nx]; /* south-east */
     }
   }
 
@@ -322,23 +322,14 @@ int reboundCollisionAVVels(const t_param params, t_speed* restrict cells, t_spee
     #pragma omp simd aligned(cells, tmp_cells)
     for (int ii = 0; ii < params.nx; ii++)
     {
-        float temp;
-
-        temp = tmp_cells->speeds[1][ii + jj*params.nx];
-        tmp_cells->speeds[1][ii + jj*params.nx] = tmp_cells->speeds[3][ii + jj*params.nx];
-        tmp_cells->speeds[3][ii + jj*params.nx] = temp;
-
-        temp = tmp_cells->speeds[2][ii + jj*params.nx];
-        tmp_cells->speeds[2][ii + jj*params.nx] = tmp_cells->speeds[4][ii + jj*params.nx];
-        tmp_cells->speeds[4][ii + jj*params.nx] = temp;
-        
-        temp = tmp_cells->speeds[5][ii + jj*params.nx];
-        tmp_cells->speeds[5][ii + jj*params.nx] = tmp_cells->speeds[7][ii + jj*params.nx];
-        tmp_cells->speeds[7][ii + jj*params.nx] = temp;
-
-        temp = tmp_cells->speeds[6][ii + jj*params.nx];
-        tmp_cells->speeds[6][ii + jj*params.nx] = tmp_cells->speeds[8][ii + jj*params.nx];
-        tmp_cells->speeds[8][ii + jj*params.nx] = temp;
+        cells->speeds[1][ii + jj*params.nx] = tmp_cells->speeds[3][ii + jj*params.nx];
+        cells->speeds[3][ii + jj*params.nx] = tmp_cells->speeds[1][ii + jj*params.nx];
+        cells->speeds[2][ii + jj*params.nx] = tmp_cells->speeds[4][ii + jj*params.nx];
+        cells->speeds[4][ii + jj*params.nx] = tmp_cells->speeds[2][ii + jj*params.nx];
+        cells->speeds[5][ii + jj*params.nx] = tmp_cells->speeds[7][ii + jj*params.nx];
+        cells->speeds[7][ii + jj*params.nx] = tmp_cells->speeds[5][ii + jj*params.nx];
+        cells->speeds[6][ii + jj*params.nx] = tmp_cells->speeds[8][ii + jj*params.nx];
+        cells->speeds[8][ii + jj*params.nx] = tmp_cells->speeds[6][ii + jj*params.nx];
 
         float local_density = 0.f;                
         
@@ -413,7 +404,7 @@ int reboundCollisionAVVels(const t_param params, t_speed* restrict cells, t_spee
         /* relaxation step */
         for (int kk = 0; kk < NSPEEDS; kk++)
         {
-          tmp_cells->speeds[kk][ii + jj*params.nx] = obstacles[jj*params.nx + ii] ? tmp_cells->speeds[kk][ii + jj*params.nx] : tmp_cells->speeds[kk][ii + jj*params.nx]
+          cells->speeds[kk][ii + jj*params.nx] = obstacles[jj*params.nx + ii] ? tmp_cells->speeds[kk][ii + jj*params.nx] : tmp_cells->speeds[kk][ii + jj*params.nx]
                                                   + params.omega
                                                   * (d_equ[kk] - tmp_cells->speeds[kk][ii + jj*params.nx]);
           /*cells->speeds[kk][ii + jj*params.nx] = tmp_cells->speeds[kk][ii + jj*params.nx]
