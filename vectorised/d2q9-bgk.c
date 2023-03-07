@@ -244,7 +244,7 @@ int propagate(const t_param params, t_speed* restrict cells, t_speed* restrict t
   __assume_aligned(cells, 64);
   __assume_aligned(tmp_cells, 64);
 
-  #pragma omp simd
+  //#pragma omp simd
   for (int jj = 0; jj < params.ny; jj++)
   {
     #pragma omp simd
@@ -437,6 +437,12 @@ float av_velocity(const t_param params, t_speed* restrict cells, int* obstacles)
   __assume_aligned(cells, 64);
   __assume((params.nx)%2==0);
   __assume((params.ny)%2==0);
+  __assume((params.nx)%4==0);
+  __assume((params.ny)%4==0);
+  __assume((params.nx)%8==0);
+  __assume((params.ny)%8==0);
+  __assume((params.nx)%16==0);
+  __assume((params.ny)%16==0);
   
   int    tot_cells = 0;  /* no. of cells used in calculation */
   float tot_u;          /* accumulated magnitudes of velocity for each cell */
@@ -445,7 +451,7 @@ float av_velocity(const t_param params, t_speed* restrict cells, int* obstacles)
   tot_u = 0.f;
 
   /* loop over all non-blocked cells */
-  #pragma omp simd aligned(cells) private(tot_cells) private(tot_u)
+  //#pragma omp simd aligned(cells) private(tot_cells) private(tot_u)
   for (int jj = 0; jj < params.ny; jj++)
   {
     #pragma omp simd aligned(cells) private(tot_cells) private(tot_u)
