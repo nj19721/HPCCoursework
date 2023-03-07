@@ -280,6 +280,12 @@ int reboundCollisionAVVels(const t_param params, t_speed* restrict cells, t_spee
   __assume_aligned(tmp_cells, 64);
   __assume((params.nx)%2==0);
   __assume((params.ny)%2==0);
+  __assume((params.nx)%4==0);
+  __assume((params.ny)%4==0);
+  __assume((params.nx)%8==0);
+  __assume((params.ny)%8==0);
+  __assume((params.nx)%16==0);
+  __assume((params.ny)%16==0);
   
   const float c_sq = 1.f / 3.f; /* square of speed of sound */
   const float w0 = 4.f / 9.f;  /* weighting factor */
