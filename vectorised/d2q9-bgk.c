@@ -194,9 +194,9 @@ int timestep(const t_param params, t_speed* cells, t_speed* tmp_cells, int* obst
   accelerate_flow(params, cells, obstacles);
   propagate(params, cells, tmp_cells);
   float avVel = reboundCollisionAVVels(params, cells, tmp_cells, obstacles);
-  //t_speed* temp = tmp_cells;
-  //tmp_cells = cells;
-  //cells = temp;
+  t_speed* temp = tmp_cells;
+  tmp_cells = cells;
+  cells = temp;
   return avVel;
 }
 
