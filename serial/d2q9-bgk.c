@@ -194,9 +194,6 @@ int timestep(const t_param params, t_speed* cells, t_speed* tmp_cells, int* obst
   accelerate_flow(params, cells, obstacles);
   propagate(params, cells, tmp_cells);
   float avVel = reboundCollisionAVVels(params, cells, tmp_cells, obstacles);
-  t_speed* temp = tmp_cells;
-  tmp_cells = cells;
-  cells = temp;
   return avVel;
 }
 
@@ -294,23 +291,14 @@ int reboundCollisionAVVels(const t_param params, t_speed* cells, t_speed* tmp_ce
       /* don't consider occupied cells */
       if (obstacles[jj*params.nx + ii])
       {
-        float temp;
-
-        temp = tmp_cells[ii + jj*params.nx].speeds[1];
-        tmp_cells[ii + jj*params.nx].speeds[1] = tmp_cells[ii + jj*params.nx].speeds[3];
-        tmp_cells[ii + jj*params.nx].speeds[3] = temp;
-
-        temp = tmp_cells[ii + jj*params.nx].speeds[2];
-        tmp_cells[ii + jj*params.nx].speeds[2] = tmp_cells[ii + jj*params.nx].speeds[4];
-        tmp_cells[ii + jj*params.nx].speeds[4] = temp;
-
-        temp = tmp_cells[ii + jj*params.nx].speeds[5];
-        tmp_cells[ii + jj*params.nx].speeds[5] = tmp_cells[ii + jj*params.nx].speeds[7];
-        tmp_cells[ii + jj*params.nx].speeds[7] = temp;
-
-        temp = tmp_cells[ii + jj*params.nx].speeds[6];
-        tmp_cells[ii + jj*params.nx].speeds[6] = tmp_cells[ii + jj*params.nx].speeds[8];
-        tmp_cells[ii + jj*params.nx].speeds[8] = temp;
+        cells[ii + jj*params.nx].speeds[1] = tmp_cells[ii + jj*params.nx].speeds[3];
+        cells[ii + jj*params.nx].speeds[2] = tmp_cells[ii + jj*params.nx].speeds[4];
+        cells[ii + jj*params.nx].speeds[3] = tmp_cells[ii + jj*params.nx].speeds[1];
+        cells[ii + jj*params.nx].speeds[4] = tmp_cells[ii + jj*params.nx].speeds[2];
+        cells[ii + jj*params.nx].speeds[5] = tmp_cells[ii + jj*params.nx].speeds[7];
+        cells[ii + jj*params.nx].speeds[6] = tmp_cells[ii + jj*params.nx].speeds[8];
+        cells[ii + jj*params.nx].speeds[7] = tmp_cells[ii + jj*params.nx].speeds[5];
+        cells[ii + jj*params.nx].speeds[8] = tmp_cells[ii + jj*params.nx].speeds[6];
       }
       else
       {
@@ -384,17 +372,15 @@ int reboundCollisionAVVels(const t_param params, t_speed* cells, t_speed* tmp_ce
         d_equ[8] = w2 * local_density * (1.f + u[8] / c_sq
                                          + (u[8] * u[8]) / (c_sq_sq_2f)
                                          - u_sq / (c_sq_2f));
-        float temp;
         /* relaxation step */
         for (int kk = 0; kk < NSPEEDS; kk++)
         {
           /*tmp_cells[ii + jj*params.nx].speeds[kk] = obstacles[jj*params.nx + ii] ? tmp_cells[ii + jj*params.nx].speeds[kk] : tmp_cells[ii + jj*params.nx].speeds[kk]
                                                   + params.omega
                                                   * (d_equ[kk] - tmp_cells[ii + jj*params.nx].speeds[kk]);*/
-          temp = tmp_cells[ii + jj*params.nx].speeds[kk];
-          tmp_cells[ii + jj*params.nx].speeds[kk] = temp
+          cells[ii + jj*params.nx].speeds[kk] = tmp_cells[ii + jj*params.nx].speeds[kk]
                                                   + params.omega
-                                                  * (d_equ[kk] - temp);
+                                                  * (d_equ[kk] - tmp_cells[ii + jj*params.nx].speeds[kk]);
         }
         /* accumulate the norm of x- and y- velocity components */
         tot_u += sqrtf((u_x * u_x) + (u_y * u_y));

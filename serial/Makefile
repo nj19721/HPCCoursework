@@ -2,7 +2,7 @@
 
 EXE=d2q9-bgk
 
-CC=gcc
+CC=icc
 CFLAGS= -std=c99 -Wall -Ofast -mtune=native
 LIBS = -lm
 
