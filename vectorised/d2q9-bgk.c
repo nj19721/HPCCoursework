@@ -210,6 +210,9 @@ int accelerate_flow(const t_param params, t_speed* restrict cells, int* obstacle
   const int jj = params.ny - 2;
 
   __assume((params.nx)%2==0);
+  __assume((params.nx)%4==0);
+  __assume((params.nx)%8==0);
+  __assume((params.nx)%16==0);
   __assume_aligned(cells, 64);
   
   #pragma omp simd
@@ -241,6 +244,12 @@ int propagate(const t_param params, t_speed* restrict cells, t_speed* restrict t
   /* loop over _all_ cells */
   __assume((params.nx)%2==0);
   __assume((params.ny)%2==0);
+  __assume((params.nx)%4==0);
+  __assume((params.ny)%4==0);
+  __assume((params.nx)%8==0);
+  __assume((params.ny)%8==0);
+  __assume((params.nx)%16==0);
+  __assume((params.ny)%16==0);
   __assume_aligned(cells, 64);
   __assume_aligned(tmp_cells, 64);
 
