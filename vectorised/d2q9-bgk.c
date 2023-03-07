@@ -200,7 +200,7 @@ int timestep(const t_param params, t_speed* cells, t_speed* tmp_cells, int* obst
   return avVel;
 }
 
-int accelerate_flow(const t_param params, t_speed* restrict cells, int* obstacles)
+int accelerate_flow(const t_param params, t_speed* restrict tmp_cells, int* obstacles)
 {
   /* compute weighting factors */
   const float w1 = params.density * params.accel / 9.f;
