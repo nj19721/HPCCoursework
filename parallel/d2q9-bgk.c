@@ -298,7 +298,7 @@ int reboundCollisionAVVels(const t_param params, t_speed* cells, t_speed* tmp_ce
       if (obstacles[jj*params.nx + ii])
       {
         // called after propagate, so taking values from scratch space
-        ** mirroring, and writing into main grid
+        //** mirroring, and writing into main grid
         cells[ii + jj*params.nx].speeds[1] = tmp_cells[ii + jj*params.nx].speeds[3];
         cells[ii + jj*params.nx].speeds[2] = tmp_cells[ii + jj*params.nx].speeds[4];
         cells[ii + jj*params.nx].speeds[3] = tmp_cells[ii + jj*params.nx].speeds[1];
