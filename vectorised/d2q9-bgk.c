@@ -322,16 +322,14 @@ int reboundCollisionAVVels(const t_param params, t_speed* restrict cells, t_spee
     #pragma omp simd aligned(cells, tmp_cells)
     for (int ii = 0; ii < params.nx; ii++)
     {
-        cells->speeds[1][ii + jj*params.nx] = tmp_cells->speeds[3][ii + jj*params.nx];
+        /*cells->speeds[1][ii + jj*params.nx] = tmp_cells->speeds[3][ii + jj*params.nx];
         cells->speeds[2][ii + jj*params.nx] = tmp_cells->speeds[4][ii + jj*params.nx];
         cells->speeds[3][ii + jj*params.nx] = tmp_cells->speeds[1][ii + jj*params.nx];
         cells->speeds[4][ii + jj*params.nx] = tmp_cells->speeds[2][ii + jj*params.nx];
         cells->speeds[5][ii + jj*params.nx] = tmp_cells->speeds[7][ii + jj*params.nx];
         cells->speeds[6][ii + jj*params.nx] = tmp_cells->speeds[8][ii + jj*params.nx];
         cells->speeds[7][ii + jj*params.nx] = tmp_cells->speeds[5][ii + jj*params.nx];
-        cells->speeds[8][ii + jj*params.nx] = tmp_cells->speeds[6][ii + jj*params.nx];
-        /* don't consider occupied cells */
-        /* compute local density total */
+        cells->speeds[8][ii + jj*params.nx] = tmp_cells->speeds[6][ii + jj*params.nx];*/
 
         float local_density = 0.f;                
         
@@ -406,7 +404,10 @@ int reboundCollisionAVVels(const t_param params, t_speed* restrict cells, t_spee
         /* relaxation step */
         for (int kk = 0; kk < NSPEEDS; kk++)
         {
-          cells->speeds[kk][ii + jj*params.nx] = obstacles[jj*params.nx + ii] ? cells->speeds[kk][ii + jj*params.nx] : tmp_cells->speeds[kk][ii + jj*params.nx]
+          /*cells->speeds[kk][ii + jj*params.nx] = obstacles[jj*params.nx + ii] ? cells->speeds[kk][ii + jj*params.nx] : tmp_cells->speeds[kk][ii + jj*params.nx]
+                                                  + params.omega
+                                                  * (d_equ[kk] - tmp_cells->speeds[kk][ii + jj*params.nx]);*/
+          cells->speeds[kk][ii + jj*params.nx] = tmp_cells->speeds[kk][ii + jj*params.nx]
                                                   + params.omega
                                                   * (d_equ[kk] - tmp_cells->speeds[kk][ii + jj*params.nx]);
         }
@@ -418,7 +419,7 @@ int reboundCollisionAVVels(const t_param params, t_speed* restrict cells, t_spee
     }
   }
 
-  /*#pragma omp simd aligned(cells) aligned(tmp_cells)
+  //#pragma omp simd aligned(cells) aligned(tmp_cells)
   for (int jj = 0; jj < params.ny; jj++)
   {
     #pragma omp simd aligned(cells) aligned(tmp_cells)
@@ -436,7 +437,7 @@ int reboundCollisionAVVels(const t_param params, t_speed* restrict cells, t_spee
         cells->speeds[8][ii + jj*params.nx] = tmp_cells->speeds[6][ii + jj*params.nx];
       }
     }
-  }*/
+  }
 
   return tot_u / (float)tot_cells;
 }
