@@ -295,8 +295,8 @@ int reboundCollisionAVVels(const t_param params, t_speed* cells, t_speed* tmp_ce
       ** respecting periodic boundary conditions (wrap around) */
 
       /* don't consider occupied cells */
-      if (obstacles[jj*params.nx + ii])
-      {
+      //if (obstacles[jj*params.nx + ii])
+      //{
         // called after propagate, so taking values from scratch space
         //** mirroring, and writing into main grid
         cells[ii + jj*params.nx].speeds[1] = tmp_cells[ii + jj*params.nx].speeds[3];
@@ -307,9 +307,9 @@ int reboundCollisionAVVels(const t_param params, t_speed* cells, t_speed* tmp_ce
         cells[ii + jj*params.nx].speeds[6] = tmp_cells[ii + jj*params.nx].speeds[8];
         cells[ii + jj*params.nx].speeds[7] = tmp_cells[ii + jj*params.nx].speeds[5];
         cells[ii + jj*params.nx].speeds[8] = tmp_cells[ii + jj*params.nx].speeds[6];
-      }
-      else
-      {
+      //}
+      //else
+      //{
         /* compute local density total */
         float local_density = 0.f;                 
         
@@ -384,7 +384,7 @@ int reboundCollisionAVVels(const t_param params, t_speed* cells, t_speed* tmp_ce
         /* relaxation step */
         for (int kk = 0; kk < NSPEEDS; kk++)
         {
-          cells[ii + jj*params.nx].speeds[kk] = tmp_cells[ii + jj*params.nx].speeds[kk]
+          cells[ii + jj*params.nx].speeds[kk] = obstacles[jj*params.nx + ii] ? cells[ii + jj*params.nx].speeds[kk] : tmp_cells[ii + jj*params.nx].speeds[kk]
                                                   + params.omega
                                                   * (d_equ[kk] - tmp_cells[ii + jj*params.nx].speeds[kk]);
         }
@@ -392,7 +392,7 @@ int reboundCollisionAVVels(const t_param params, t_speed* cells, t_speed* tmp_ce
         tot_u += sqrtf((u_x * u_x) + (u_y * u_y));
         /* increase counter of inspected cells */
         ++tot_cells;
-      }
+      //}
     }
   }
 
