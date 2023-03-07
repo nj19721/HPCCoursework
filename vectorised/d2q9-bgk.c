@@ -213,7 +213,7 @@ int accelerate_flow(const t_param params, t_speed* restrict tmp_cells, int* obst
   __assume((params.nx)%4==0);
   __assume((params.nx)%8==0);
   __assume((params.nx)%16==0);
-  __assume_aligned(cells, 64);
+  __assume_aligned(tmp_cells, 64);
   
   #pragma omp simd
   for (int ii = 0; ii < params.nx; ii++)
