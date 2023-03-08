@@ -1,0 +1,165 @@
+19 [47785433629696] INFO perfrun.launcher <> - Launcher main begin
+23 [47785433629696] INFO perfrun.launcher <> - MessageCatalogInit finished
+23 [47785433629696] INFO perfrun.launcher <> - Launcher instance created
+23 [47785433629696] INFO perfrun.launcher <> - argc = 7; cmdline = /mnt/storage/software/languages/intel/intel-parallel_studio_xe_2020_u4/advisor_2020.3.0.607294/bin64/advixe-runss --ui-output-format xml --ui-output-fd 7 --option-file /user/home/nj19721/report/HPCCoursework/parallel/advi/e000/hs000/config/runss.options 
+37 [47785433629696] INFO perfrun.launcher <> - plugin remoteplug has been added successfully
+37 [47785433629696] INFO perfrun.launcher <> - plugin system has been added successfully
+37 [47785433629696] INFO perfrun.launcher <> - plugin vdso has been added successfully
+37 [47785433629696] INFO perfrun.launcher <> - plugin itt has been added successfully
+37 [47785433629696] INFO perfrun.launcher <> - plugin  has been added successfully
+37 [47785433629696] INFO perfrun.launcher <> - plugin gpu has been added successfully
+37 [47785433629696] INFO perfrun.launcher <> - plugin  has been added successfully
+37 [47785433629696] INFO perfrun.launcher <> - plugin  has been added successfully
+37 [47785433629696] INFO perfrun.launcher <> - plugin  has been added successfully
+37 [47785433629696] INFO perfrun.launcher <> - plugin mrte has been added successfully
+37 [47785433629696] INFO perfrun.launcher <> - plugin  has been added successfully
+37 [47785433629696] INFO perfrun.launcher <> - plugin  has been added successfully
+37 [47785433629696] INFO perfrun.launcher <> - plugin  has been added successfully
+43 [47785433629696] INFO perfrun.launcher <> - plugin  has been added successfully
+43 [47785433629696] INFO perfrun.launcher <> - plugin  has been added successfully
+43 [47785433629696] INFO perfrun.launcher <> - plugin  has been added successfully
+43 [47785433629696] INFO perfrun.launcher <> - plugin  has been added successfully
+43 [47785433629696] INFO perfrun.launcher <> - plugin tpss has been added successfully
+43 [47785433629696] INFO perfrun.launcher <> - plugin  has been added successfully
+43 [47785433629696] INFO perfrun.launcher <> - plugin  has been added successfully
+43 [47785433629696] INFO perfrun.launcher <> - plugin  has been added successfully
+44 [47785433629696] INFO perfrun.launcher <> - plugin  has been added successfully
+44 [47785433629696] INFO perfrun.launcher <> - plugin  has been added successfully
+44 [47785433629696] INFO perfrun.launcher <> - plugin  has been added successfully
+44 [47785433629696] INFO perfrun.launcher <> - plugin  has been added successfully
+44 [47785433629696] INFO perfrun.launcher <> - plugin  has been added successfully
+44 [47785433629696] INFO perfrun.launcher <> - plugin  has been added successfully
+44 [47785433629696] INFO perfrun.launcher <> - plugin  has been added successfully
+44 [47785433629696] INFO perfrun.launcher <> - the option was added --interval: Specify an interval of data collection (for example, sampling) in milliseconds.
+44 [47785433629696] INFO perfrun.launcher <> - the option was added --follow-child: Profile process with or without children.
+44 [47785433629696] INFO perfrun.launcher <> - the option was added --gelding: BADMSG: perfrun1.launcher.plugin_manager::gelding
+44 [47785433629696] INFO perfrun.launcher <> - the option was added --time-source: Specify time source for measurement. Possible values: sys - wall clock time; tsc - time stamp counter; ext - time from an external source; auto - auto select accurate time source.
+44 [47785433629696] INFO perfrun.launcher <> - the option was added --stack: Enable or disable collection of stacks.
+45 [47785433629696] INFO perfrun.launcher <> - the option was added --stack-stitching: Enable or disable the stack stitching algorithm for Intel TBB-based applications.
+45 [47785433629696] INFO perfrun.launcher <> - the option was added --type: Specify type of data to be collected. For example, --type cpu:counters,waiting:nostack,io.
+47 [47785433629696] INFO perfrun.launcher <> - the option was added --mrte-mode: Specify Java/.NET/other managed runtime collection mode. Possible values: native - collect information only for native code; managed - collect information only for managed code; mixed - collect information for both managed and native code; auto - choose the mode based on binary type.
+47 [47785433629696] INFO perfrun.launcher <> - the option was added --mrte-mode-list: List supported Java/.NET/other managed runtime collection modes.
+47 [47785433629696] INFO perfrun.launcher <> - the option was added --mrte-type: Specify which managed runtimes to collect. Possible values: java - collect information for Java; dotnet - collect information for .NET; python - collect information for CPython. You can specify several values separated by comma.
+47 [47785433629696] INFO perfrun.launcher <> - the option was added --mrte-type-list: List supported Java/.NET/other managed runtime types.
+47 [47785433629696] INFO perfrun.launcher <> - the option was added --trace-strategy: Specify how to profile a process tree. <string> can be "<process>:trace:notrace" - profile the process but do not profile its children. Shorthand parameters: t - trace, nt - notrace. For example, "vtunedemo.exe:t:t".
+47 [47785433629696] INFO perfrun.launcher <> - the option was added --collector: BADMSG: perfrun1.launcher.plugin_manager::collector
+47 [47785433629696] INFO perfrun.launcher <> - the option was added --system-wide: Enable system-wide profiling. This mode may require additional permissions.
+47 [47785433629696] INFO perfrun.launcher <> - the option was added --kvm-guest: Enable KVM guest OS profiling.
+47 [47785433629696] INFO perfrun.launcher <> - the option was added --kvm-guest-kallsyms: Specify a local path to the /proc/kallsyms file copied from the guest OS for proper symbol resolution.
+47 [47785433629696] INFO perfrun.launcher <> - the option was added --kvm-guest-modules: Specify a local path to the /proc/modules file copied from the guest OS for proper symbol resolution.
+48 [47785433629696] INFO perfrun.launcher <> - the option was added --bandwidth-limits: Measure bandwidth limits
+48 [47785433629696] INFO perfrun.launcher <> - the option was added --bandwidth-strategy: Bandwidth limits determination specific properties (example: --bandwidth-strategy array-size=0,duration=500).
+48 [47785433629696] INFO perfrun.launcher <> - the option was added --bandwidth-config: List of benchmarks to run.
+48 [47785433629696] INFO perfrun.launcher <> - the option was added --dump-vdso: Dump [vdso] to result directory
+48 [47785433629696] INFO perfrun.launcher <> - the option was added --system-collector-config: Specify subcollectors. Possible values: all, container, device-info, none. Specify subcollectors. Possible values: all, vdso.
+48 [47785433629696] INFO perfrun.launcher <> - the option was added --itt-config: Specify a sub-set of ITT API to collect.
+48 [47785433629696] INFO perfrun.launcher <> - the option was added --itt-debug: Set pseudo-breakpoint at ITT API collector's start to enable the debugger to attach early.
+48 [47785433629696] INFO perfrun.launcher <> - the option was added --gpu-config: Specify types of GPU data to be collected. Possible values: preset1, preset2.
+48 [47785433629696] INFO perfrun.launcher <> - the option was added --gpu-debug: Enable self-testing of the GPGPU profiling collector.
+48 [47785433629696] INFO perfrun.launcher <> - the option was added --gpu-counting: Collect GPU data in the counting mode.
+48 [47785433629696] INFO perfrun.launcher <> - the option was added --stackwalk: Specify stack unwinding method. Possible values: online - unwind stacks during collection; offline - unwind stacks after collection is finished.
+48 [47785433629696] INFO perfrun.launcher <> - the option was added --filter-include: Filter data during collection. Possible values: contended=<on|off> - filter out uncontended events; contended_nostack=<time> - filter out stacks for contended events that take less than <time> microseconds; wait=<time> - ignore transitions and blocks with wait time less than <time> microseconds; wait_nostack=<time> - filter out stacks for waits that take less than <time> microseconds.
+49 [47785433629696] INFO perfrun.launcher <> - the option was added --debug-pin: Debug PIN tool and runtime.
+49 [47785433629696] INFO perfrun.launcher <> - the option was added --debug-exception: Disallow the application to set own abnormal termination handler.
+49 [47785433629696] INFO perfrun.launcher <> - the option was added --trace-type: Specify the trace file granularity. Possible values: per-thread - per-thread trace file generation; per-process - per-process trace file generation.
+49 [47785433629696] INFO perfrun.launcher <> - the option was added --instrumentation-type: Specify type of instrumentation.
+49 [47785433629696] INFO perfrun.launcher <> - the option was added --altstack: Enable or disable usage of altstacks for profiling signal handlers.
+49 [47785433629696] INFO perfrun.launcher <> - the option was added --profiling-signal: Alternate profiling signal.
+49 [47785433629696] INFO perfrun.launcher <> - the option was added --memory-strategy: Specify a minimal memory object size to be traced and a hash table size for faster objects search; for example: --memory-strategy obj-size-min=1024,hash-table-size=4096.
+49 [47785433629696] INFO perfrun.launcher <> - the option was added --gpu-profiling-type: Specify a type of deep GPU profiling: none, bblatency, memlatency, instcount.
+49 [47785433629696] INFO perfrun.launcher <> - the option was added --opencl-trace-mode: Specify OpenCL kernel tracing modes: 'default' to trace OpenCL kernels for Intel Graphics Driver only; 'epoch' for any non-Intel graphics, where OpenCL kernels will be traced and OpenCL profiling API timestamps will be interpreted as Unux Epoch time in nanoseconds; 'completion' to trace OpenCL kernels for any Graphics Driver and bind OpenCL profiling API timestamps to the timestamp of OpenCL completion callback.
+49 [47785433629696] INFO perfrun.launcher <> - the option was added --gpu-kernels-to-profile: Specify a comma-separated list of GPU kernel names and invocations to be profiled in the following format: kernel_name[#start_idx#step#stop_idx], where kernel_name is the name of GPU kernel; start_idx is the number of the first invocation; and stop_idx is the number of the last invocation to be profiled.
+52 [47785433629696] INFO perfrun.launcher <> - create msngr2::ICliToolContext
+53 [47785433629696] INFO perfrun.launcher <> - create file finder object
+53 [47785433629696] INFO perfrun.launcher <> - create a result directory: pattern = /user/home/nj19721/report/HPCCoursework/parallel/advi/e000/hs000 pid = 4294967295
+59 [47785433629696] INFO perfrun.sdk <> - checked that the directory /user/home/nj19721/report/HPCCoursework/parallel/advi/e000/hs000 is a local directory
+60 [47785433629696] INFO perfrun.sdk <> - the directory /user/home/nj19721/report/HPCCoursework/parallel/advi/e000/hs000 is located on a share or its FS ID is unknown 1196443219
+60 [47785433629696] INFO perfrun.sdk <> - checked that the directory /tmp/advixe-tmp-nj19721 is a local directory
+60 [47785433629696] INFO perfrun.sdk <> - the directory /tmp/advixe-tmp-nj19721 is a local directory with FS type ID 16914836
+61 [47785433629696] INFO perfrun.launcher <> - Create a local result directory /tmp/advixe-tmp-nj19721/advixe-res-12657-66992361140759392 due to the user result path /user/home/nj19721/report/HPCCoursework/parallel/advi/e000/hs000 is located on a share
+61 [47785433629696] INFO perfrun.launcher <> - create data directory = /tmp/advixe-tmp-nj19721/advixe-res-12657-66992361140759392/data.0
+61 [47785433629696] INFO perfrun.launcher <> - create data directory = /user/home/nj19721/report/HPCCoursework/parallel/advi/e000/hs000/data.0
+62 [47785433629696] INFO perfrun.launcher <> - Creating the master collection flag
+65 [47785433629696] INFO perfrun.launcher <> - Done creating the master collection flag
+71 [47785561609984] INFO perfrun.launcher <> - plugin [remoteplug] was disabled because it doesn't support the given collection type.
+74 [47785561609984] INFO perfrun.sdk <> - Allocating TMU :/tmp/advixe-tmp-nj19721/advixe-res-12657-66992361140759392/data.0/systemcollector-12657-compute243.bc4.acrc.priv.sc
+74 [47785561609984] INFO perfrun.launcher <> - plugin [] was disabled because it doesn't support the given collection type.
+74 [47785561609984] INFO perfrun.launcher <> - plugin [gpu] was disabled because it doesn't support the given collection type.
+74 [47785561609984] INFO perfrun.launcher <> - plugin [] was disabled because it doesn't support the given collection type.
+74 [47785561609984] INFO perfrun.launcher <> - plugin [] was disabled because it doesn't support the given collection type.
+74 [47785561609984] INFO perfrun.launcher <> - plugin [] was disabled because it doesn't support the given collection type.
+74 [47785561609984] INFO perfrun.mrte <> - system-wide mode is 0
+74 [47785561609984] INFO perfrun.mrte <> - Getting  mrte profiling environment ...
+111 [47785561609984] INFO perfrun.mrte <> - INTEL_MRTE_DATA_DIR=/tmp/advixe-tmp-nj19721/advixe-res-12657-66992361140759392/data.0
+111 [47785561609984] INFO perfrun.mrte <> - INTEL_MRTE_HOST_NAME=compute243.bc4.acrc.priv
+111 [47785561609984] INFO perfrun.mrte <> - Data directory: /tmp/advixe-tmp-nj19721/advixe-res-12657-66992361140759392/data.0
+111 [47785561609984] INFO perfrun.mrte <> - Mrte plugin is initialized
+111 [47785561609984] INFO perfrun.launcher <> - plugin [] was disabled because it doesn't support the given collection type.
+111 [47785561609984] INFO perfrun.launcher <> - plugin [] was disabled because it doesn't support the given collection type.
+111 [47785561609984] INFO perfrun.launcher <> - plugin [] was disabled because it doesn't support the given collection type.
+111 [47785561609984] INFO perfrun.launcher <> - plugin [] was disabled because it doesn't support the given collection type.
+111 [47785561609984] INFO perfrun.launcher <> - plugin [] was disabled because it doesn't support the given collection type.
+111 [47785561609984] INFO perfrun.launcher <> - plugin [] was disabled because it doesn't support the given collection type.
+111 [47785561609984] INFO perfrun.launcher <> - plugin [] was disabled because it doesn't support the given collection type.
+111 [47785561609984] INFO perfrun.tpss <> - initialize tpss controller
+111 [47785561609984] INFO perfrun.tpss <> - configure collection mode: value = cpu:stack
+111 [47785561609984] INFO perfrun.tpss <> - default obj-size-min=1024
+111 [47785561609984] INFO perfrun.tpss <> - default hash-table-size=0
+161 [47785561609984] INFO perfrun.launcher <> - plugin [] was disabled because it doesn't support the given collection type.
+161 [47785561609984] INFO perfrun.launcher <> - plugin [] was disabled because it doesn't support the given collection type.
+161 [47785561609984] INFO perfrun.launcher <> - plugin [] was disabled because it doesn't support the given collection type.
+161 [47785561609984] INFO perfrun.launcher <> - plugin [] was disabled because it doesn't support the given collection type.
+161 [47785561609984] INFO perfrun.launcher <> - plugin [] was disabled because it doesn't support the given collection type.
+161 [47785561609984] INFO perfrun.launcher <> - plugin [] was disabled because it doesn't support the given collection type.
+161 [47785561609984] INFO perfrun.launcher <> - plugin [] was disabled because it doesn't support the given collection type.
+161 [47785561609984] INFO perfrun.launcher <> - plugin [] was disabled because it doesn't support the given collection type.
+161 [47785561609984] INFO perfrun.launcher <> - plugin [] was disabled because it doesn't support the given collection type.
+161 [47785561609984] INFO perfrun.launcher <> - plugin [] was disabled because it doesn't support the given collection type.
+161 [47785433629696] INFO perfrun.launcher <> - set environment variable: LD_LIBRARY_PATH = /mnt/storage/software/languages/intel/intel-parallel_studio_xe_2020_u4/advisor_2020.3.0.607294/lib32/runtime:/mnt/storage/software/languages/intel/intel-parallel_studio_xe_2020_u4/advisor_2020.3.0.607294/lib64/runtime:/mnt/storage/software/languages/intel/intel-parallel_studio_xe_2020_u4/itac/2020.3.036/intel64/slib:/mnt/storage/software/languages/intel/intel-parallel_studio_xe_2020_u4/compilers_and_libraries_2020.4.304/linux/compiler/lib/intel64_lin:/mnt/storage/software/languages/intel/intel-parallel_studio_xe_2020_u4/compilers_and_libraries_2020.4.304/linux/mpi/intel64/libfabric/lib:/mnt/storage/software/languages/intel/intel-parallel_studio_xe_2020_u4/compilers_and_libraries_2020.4.304/linux/mpi/intel64/lib/release:/mnt/storage/software/languages/intel/intel-parallel_studio_xe_2020_u4/compilers_and_libraries_2020.4.304/linux/mpi/intel64/lib:/mnt/storage/software/languages/intel/intel-parallel_studio_xe_2020_u4/compilers_and_libraries_2020.4.304/linux/ipp/lib/intel64:/mnt/storage/software/languages/intel/intel-parallel_studio_xe_2020_u4/compilers_and_libraries_2020.4.304/linux/mkl/lib/intel64_lin:/mnt/storage/software/languages/intel/intel-parallel_studio_xe_2020_u4/compilers_and_libraries_2020.4.304/linux/tbb/lib/intel64/gcc4.8:/mnt/storage/software/languages/intel/intel-parallel_studio_xe_2020_u4/compilers_and_libraries_2020.4.304/linux/daal/lib/intel64_lin:/mnt/storage/software/languages/intel/intel-parallel_studio_xe_2018_u3/itac/2018.3.022/intel64/slib:/mnt/storage/software/languages/intel/intel-parallel_studio_xe_2018_u3/compilers_and_libraries_2018.3.222/linux/compiler/lib/intel64:/mnt/storage/software/languages/intel/intel-parallel_studio_xe_2018_u3/compilers_and_libraries_2018.3.222/linux/compiler/lib/intel64_lin:/mnt/storage/software/languages/intel/intel-parallel_studio_xe_2018_u3/compilers_and_libraries_2018.3.222/linux/mpi/intel64/lib:/mnt/storage/software/languages/intel/intel-parallel_studio_xe_2018_u3/compilers_and_libraries_2018.3.222/linux/mpi/mic/lib:/mnt/storage/software/languages/intel/intel-parallel_studio_xe_2018_u3/compilers_and_libraries_2018.3.222/linux/ipp/lib/intel64:/mnt/storage/software/languages/intel/intel-parallel_studio_xe_2018_u3/compilers_and_libraries_2018.3.222/linux/mkl/lib/intel64_lin:/mnt/storage/software/languages/intel/intel-parallel_studio_xe_2018_u3/compilers_and_libraries_2018.3.222/linux/tbb/lib/intel64/gcc4.7:/mnt/storage/software/languages/intel/intel-parallel_studio_xe_2018_u3/debugger_2018/iga/lib:/mnt/storage/software/languages/intel/intel-parallel_studio_xe_2018_u3/debugger_2018/libipt/intel64/lib:/mnt/storage/software/languages/intel/intel-parallel_studio_xe_2018_u3/compilers_and_libraries_2018.3.222/linux/daal/lib/intel64_lin:/mnt/storage/software/languages/java/jdk1.8.0_141/lib:/mnt/storage/software/languages/intel/intel-parallel_studio_xe_2020_u4/debugger_2020/python/intel64/lib:/mnt/storage/software/languages/intel/intel-parallel_studio_xe_2020_u4/debugger_2020/libipt/intel64/lib:/mnt/storage/software/languages/intel/intel-parallel_studio_xe_2020_u4/compilers_and_libraries_2020.4.304/linux/daal/../tbb/lib/intel64_lin/gcc4.4:/mnt/storage/software/languages/intel/intel-parallel_studio_xe_2020_u4/compilers_and_libraries_2020.4.304/linux/daal/../tbb/lib/intel64_lin/gcc4.8:/mnt/storage/easybuild/software/Python/2.7.12-foss-2016b/lib:/mnt/storage/easybuild/software/libffi/3.2.1-foss-2016b/lib64:/mnt/storage/easybuild/software/libffi/3.2.1-foss-2016b/lib:/mnt/storage/easybuild/software/GMP/6.1.1-foss-2016b/lib:/mnt/storage/easybuild/software/Tk/8.6.5-foss-2016b/lib:/mnt/storage/easybuild/software/SQLite/3.13.0-foss-2016b/lib:/mnt/storage/easybuild/software/Tcl/8.6.5-foss-2016b/lib:/mnt/storage/easybuild/software/libreadline/6.3-foss-2016b/lib:/mnt/storage/easybuild/software/ncurses/6.0-foss-2016b/lib:/mnt/storage/easybuild/software/zlib/1.2.8-foss-2016b/lib:/mnt/storage/easybuild/software/bzip2/1.0.6-foss-2016b/lib:/mnt/storage/easybuild/software/ScaLAPACK/2.0.2-gompi-2016b-OpenBLAS-0.2.18-LAPACK-3.6.1/lib:/mnt/storage/easybuild/software/FFTW/3.3.4-gompi-2016b/lib:/mnt/storage/easybuild/software/OpenBLAS/0.2.18-GCC-5.4.0-2.26-LAPACK-3.6.1/lib:/mnt/storage/easybuild/software/OpenMPI/1.10.3-GCC-5.4.0-2.26/lib:/mnt/storage/easybuild/software/hwloc/1.11.3-GCC-5.4.0-2.26/lib:/mnt/storage/easybuild/software/numactl/2.0.11-GCC-5.4.0-2.26/lib:/mnt/storage/apps/intel/compilers_and_libraries_2017.1.132/linux/compiler/lib/intel64:/mnt/storage/apps/intel/lib/intel64:/mnt/storage/apps/intel/lib:/mnt/storage/easybuild/software/binutils/2.26-GCCcore-5.4.0/lib:/mnt/storage/easybuild/software/GCCcore/5.4.0/lib/gcc/x86_64-unknown-linux-gnu/5.4.0:/mnt/storage/easybuild/software/GCCcore/5.4.0/lib64:/mnt/storage/easybuild/software/GCCcore/5.4.0/lib:/mnt/storage/apps/bc4/slurm/22.05.6/lib:/mnt/storage/software/apps/sratoolkit.3.0.0/install/lib64
+161 [47785433629696] INFO perfrun.launcher <> - set environment variable: INTEL_LIBITTNOTIFY32 = /mnt/storage/software/languages/intel/intel-parallel_studio_xe_2020_u4/advisor_2020.3.0.607294/lib32/runtime/libittnotify_collector.so
+161 [47785433629696] INFO perfrun.launcher <> - set environment variable: INTEL_LIBITTNOTIFY64 = /mnt/storage/software/languages/intel/intel-parallel_studio_xe_2020_u4/advisor_2020.3.0.607294/lib64/runtime/libittnotify_collector.so
+161 [47785433629696] INFO perfrun.launcher <> - set environment variable: INTEL_ITTNOTIFY_GROUPS = 
+161 [47785433629696] INFO perfrun.launcher <> - set environment variable: INTEL_JIT_PROFILER32 = /mnt/storage/software/languages/intel/intel-parallel_studio_xe_2020_u4/advisor_2020.3.0.607294/lib32/runtime/libittnotify_collector.so
+161 [47785433629696] INFO perfrun.launcher <> - set environment variable: INTEL_JIT_PROFILER64 = /mnt/storage/software/languages/intel/intel-parallel_studio_xe_2020_u4/advisor_2020.3.0.607294/lib64/runtime/libittnotify_collector.so
+161 [47785433629696] INFO perfrun.launcher <> - set environment variable: VS_PROFILER = libittnotify_collector.so
+161 [47785433629696] INFO perfrun.launcher <> - set environment variable: ENABLE_JITPROFILING = 1
+161 [47785433629696] INFO perfrun.launcher <> - set environment variable: CL_CONFIG_USE_VTUNE = True
+161 [47785433629696] INFO perfrun.launcher <> - set environment variable: __OCL_MIC_INTEL_LIBITTNOTIFY64 = /amplxe/results/libittnotify_collector.so
+161 [47785433629696] INFO perfrun.launcher <> - set environment variable: __OCL_MIC_INTEL_JIT_PROFILER64 = /amplxe/results/libittnotify_collector.so
+162 [47785433629696] INFO perfrun.launcher <> - set environment variable: KMP_FORKJOIN_FRAMES = 0
+162 [47785433629696] INFO perfrun.launcher <> - set environment variable: KMP_FORKJOIN_FRAMES_MODE = 0
+162 [47785433629696] INFO perfrun.launcher <> - set environment variable: OMP_TOOL = disabled
+162 [47785433629696] INFO perfrun.launcher <> - set environment variable: INTEL_MRTE_DATA_DIR = /tmp/advixe-tmp-nj19721/advixe-res-12657-66992361140759392/data.0
+162 [47785433629696] INFO perfrun.launcher <> - set environment variable: INTEL_MRTE_HOST_NAME = compute243.bc4.acrc.priv
+162 [47785433629696] INFO perfrun.launcher <> - RpcServer: run RPC server to handle requests
+163 [47785433629696] INFO perfrun.launcher <> - Launcher: command line to start before modification = ./d2q9-bgk input_128x128.params obstacles_128x128.dat
+163 [47785433629696] INFO perfrun.launcher <> - Launcher: command line to start after modification = /mnt/storage/software/languages/intel/intel-parallel_studio_xe_2020_u4/advisor_2020.3.0.607294/bin64/pin -error_file /tmp/advixe-tmp-nj19721/advixe-res-12657-66992361140759392/data.0/pinerr.tpsslog -detach_reattach -follow_execv -tool_load_option deepbind -t64 /mnt/storage/software/languages/intel/intel-parallel_studio_xe_2020_u4/advisor_2020.3.0.607294/lib64/libtpsstool.so -t /mnt/storage/software/languages/intel/intel-parallel_studio_xe_2020_u4/advisor_2020.3.0.607294/lib32/libtpsstool.so -server_name tpss_ipc.12657 -prd_dir /mnt/storage/software/languages/intel/intel-parallel_studio_xe_2020_u4/advisor_2020.3.0.607294 -- ./d2q9-bgk input_128x128.params obstacles_128x128.dat
+163 [47785433629696] INFO perfrun.launcher <> - ProcessCreator object was created
+165 [47785433629696] INFO perfrun.launcher <> - Launcher: the process was started in suspend mode
+169 [47785561609984] WARN perfrun.system <> - Could not do anything with /sys/kernel/debug/kvm: boost::filesystem::status: Permission denied: "/sys/kernel/debug/kvm", at file: vcs/perfrun1/plugins/system/src/trace_writer.cpp:774
+169 [47785561609984] WARN perfrun.system <> - Folder "/var/run/libvirt/qemu/"doesn't exist, at file: vcs/perfrun1/plugins/system/src/trace_writer.cpp:787
+172 [47785561609984] WARN perfrun.sdk <> - Failed to find xl binary on any of the system paths: /bin, /sbin, /usr/bin, /usr/sbin., at file: vcs/perfrun1/sdk/src/utils.cpp:199
+175 [47785561609984] INFO perfrun.vdso <> - Helper runtool '/mnt/storage/software/languages/intel/intel-parallel_studio_xe_2020_u4/advisor_2020.3.0.607294/bin32/advixe-runss -dump-vdso -r /tmp/advixe-tmp-nj19721/advixe-res-12657-66992361140759392 --tmp-dir /tmp/advixe-tmp-nj19721' returned 1
+252 [47785561609984] INFO perfrun.vdso <> - Helper runtool '/mnt/storage/software/languages/intel/intel-parallel_studio_xe_2020_u4/advisor_2020.3.0.607294/bin64/advixe-runss -dump-vdso -r /tmp/advixe-tmp-nj19721/advixe-res-12657-66992361140759392 --tmp-dir /tmp/advixe-tmp-nj19721' returned 0
+252 [47785561609984] INFO perfrun.itt <> - start itt controller for pid #12662
+252 [47785561609984] INFO perfrun.tpss <> - start tpss controller for pid #12662
+303 [47785433629696] INFO perfrun.launcher <> - Launcher: all plugins were started
+303 [47785433629696] INFO perfrun.launcher <> - DirectoryMonitor object was created
+303 [47785433629696] INFO perfrun.launcher <> - DirectoryMonitor: a callback was added
+303 [47785433629696] INFO perfrun.launcher <> - DirectoryMonitor was started with pingTime = 1000
+303 [47785433629696] INFO perfrun.launcher <> - DeadlineTimer is going to be constructed
+303 [47785433629696] INFO perfrun.launcher <> - DeadlineTimer: a callback was added
+308 [47785433629696] INFO perfrun.launcher <> - Launcher: resume the profiled application and  wait its termination or stop command
+9310 [47785433629696] INFO perfrun.launcher <> - Launcher: the profiled application was terminated  with exit code = 0
+9321 [47785561609984] INFO perfrun.itt <> - stop itt controller
+9321 [47785561609984] INFO perfrun.itt <> - detach itt controller
+9321 [47785561609984] INFO perfrun.tpss <> - stop tpss controller
+9321 [47785561609984] INFO perfrun.sdk <> - De-allocating TMU: /tmp/advixe-tmp-nj19721/advixe-res-12657-66992361140759392/data.0/systemcollector-12657-compute243.bc4.acrc.priv.sc
+9321 [47785561609984] INFO perfrun.system <> - closed the system trace file: /tmp/advixe-tmp-nj19721/advixe-res-12657-66992361140759392/data.0/systemcollector-12657-compute243.bc4.acrc.priv.sc
+9321 [47785433629696] INFO perfrun.launcher <> - Launcher: all plugins were stopped.
+9321 [47785433629696] INFO perfrun.launcher <> - DeadlineTimer is going to be destroyed
+9321 [47785433629696] INFO perfrun.launcher <> - DeadlineTimer was destroyed
+9321 [47785433629696] INFO perfrun.launcher <> - DirectoryMonitor object was destroyed
+9321 [47785433629696] WARN perfrun.launcher <> - Stop command is ignored because it is received when collection is already stopped, at file: vcs/perfrun1/launcher/src/command_handler.cpp:212
+9358 [47785433629696] INFO perfrun.launcher <> - Application exit code: 0
+9358 [47785433629696] INFO perfrun.launcher <> - Exit code: 0

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- <!DOCTYPE IntelParallelAdvisorSummaryCollection SYSTEM  "IntelParallelAdvisorSummaryCollection.dtd"> -->
+
+<IntelParallelAdvisorSummary version="" 
+                             kind="DATAKIND_SURVEY_EX" >
+  <hotspot filename=""
+           line_no="4294967295"
+           routine="main"
+           is_vectorized="0"
+           self_time="9.999715E-03"
+           total_time="9.030066E+01"
+           trip_counts=""
+           func_instance="18"
+           priority="0"/>
+  <hotspot filename=""
+           line_no="4294967295"
+           routine="reboundCollisionAVVels"
+           is_vectorized="1"
+           self_time="5.516736E+01"
+           total_time="5.516736E+01"
+           trip_counts=""
+           func_instance="26"
+           priority="0"/>
+  <hotspot filename=""
+           line_no="4294967295"
+           routine="main"
+           is_vectorized="0"
+           self_time="1.630935E+01"
+           total_time="1.630935E+01"
+           trip_counts=""
+           func_instance="25"
+           priority="0"/>
+  <hotspot filename=""
+           line_no="4294967295"
+           routine="main"
+           is_vectorized="0"
+           self_time="3.399885E-01"
+           total_time="3.399885E-01"
+           trip_counts=""
+           func_instance="37"
+           priority="0"/>
+  <hotspot filename=""
+           line_no="4294967295"
+           routine="initialise"
+           is_vectorized="0"
+           self_time="0.000000E+00"
+           total_time="4.000000E-02"
+           trip_counts=""
+           func_instance="14"
+           priority="0"/>
+</IntelParallelAdvisorSummary >

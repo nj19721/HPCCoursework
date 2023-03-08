@@ -1,0 +1,17 @@
+-r
+/user/home/nj19721/report/HPCCoursework/parallel/advi/e000/trc000
+-quiet
+-search-dir
+src:p=./advi
+-cs-file
+/user/home/nj19721/report/HPCCoursework/parallel/advi/e000/callstacks.def
+--cs-mode=no-count-loops,no-count-flops,stl-profiling,stack-stitching
+--target-loops=n
+--count-flops
+--benchmarks=dram,mcdram,cpu_cache,flop_peak,int
+--jit-profiling
+--gpu-collect-traffic
+--
+./d2q9-bgk
+input_128x128.params
+obstacles_128x128.dat
