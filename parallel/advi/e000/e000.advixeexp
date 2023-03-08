@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <root>
+ <is_snapshot type="bool">false</is_snapshot>
+ <is_temporary type="bool">false</is_temporary>
  <rdmgr>
-  <timestamp type="u64_t">1678269737</timestamp>
+  <timestamp type="u64_t">1678270697</timestamp>
   <hostname type="string">compute243.bc4.acrc.priv</hostname>
   <os type="string">linux</os>
   <product type="string">Intel® Advisor 2020 Update 3</product>

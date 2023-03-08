@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <root>
  <rdmgr>
-  <timestamp type="u64_t">1678269737</timestamp>
+  <timestamp type="u64_t">1678270697</timestamp>
   <hostname type="string">compute243.bc4.acrc.priv</hostname>
   <os type="string">linux</os>
   <product type="string">Intel® Advisor 2020 Update 3</product>
@@ -17,6 +17,25 @@
   <isa type="string">avx2</isa>
  </rdmgr>
  <All_Configurations-All_Platforms>
+  <searchDirs>
+   <searchCategory>
+    <category type="u8_t">1</category>
+   </searchCategory>
+   <searchCategory>
+    <category type="u8_t">2</category>
+   </searchCategory>
+   <searchCategory>
+    <category type="u8_t">3</category>
+    <searchDirectory>
+     <name type="string">./advi</name>
+     <recursive type="bool">false</recursive>
+     <priority type="bool">true</priority>
+    </searchDirectory>
+   </searchCategory>
+   <searchCategory>
+    <category type="u8_t">4</category>
+   </searchCategory>
+  </searchDirs>
   <target_settings>
    <workloads>
     <localhost>
@@ -120,24 +139,5 @@
     </localhost>
    </workloads>
   </target_settings>
-  <searchDirs>
-   <searchCategory>
-    <category type="u8_t">1</category>
-   </searchCategory>
-   <searchCategory>
-    <category type="u8_t">2</category>
-   </searchCategory>
-   <searchCategory>
-    <category type="u8_t">3</category>
-    <searchDirectory>
-     <name type="string">./advi</name>
-     <recursive type="bool">false</recursive>
-     <priority type="bool">true</priority>
-    </searchDirectory>
-   </searchCategory>
-   <searchCategory>
-    <category type="u8_t">4</category>
-   </searchCategory>
-  </searchDirs>
  </All_Configurations-All_Platforms>
 </root>
