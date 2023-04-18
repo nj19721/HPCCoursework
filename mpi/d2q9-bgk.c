@@ -133,6 +133,12 @@ int main(int argc, char* argv[])
   struct timeval timstr;                                                             /* structure to hold elapsed time */
   double tot_tic, tot_toc, init_tic, init_toc, comp_tic, comp_toc, col_tic, col_toc; /* floating point numbers to calculate elapsed wallclock time */
 
+  MPI_Init(&argc, &argv);
+  int nprocs, rank;
+  MPI_Comm_size(MPI_COMM_WORLD, &nprocs);
+  MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+  printf("Hello from rank %d of %d\n", rank, nprocs);
+
   /* parse the command line */
   if (argc != 3)
   {
@@ -187,6 +193,8 @@ int main(int argc, char* argv[])
   printf("Elapsed Total time:\t\t\t%.6lf (s)\n",   tot_toc  - tot_tic);
   write_values(params, cells, obstacles, av_vels);
   finalise(&params, &cells, &tmp_cells, &obstacles, &av_vels);
+
+  MPI_Finalize();
 
   return EXIT_SUCCESS;
 }
