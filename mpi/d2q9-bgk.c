@@ -51,6 +51,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <math.h>
 #include <time.h>
 #include <sys/time.h>
@@ -73,6 +74,16 @@ typedef struct
   float omega;         /* relaxation parameter */
 } t_param;
 
+typedef struct
+{
+  int rank; /*process rank*/
+  int nprocs; /*total number of processes*/
+  int work; /*number of columns of work per process*/
+  int startWork; /*colum number to start work*/
+  int endWork; /*column number to end work*/
+} process_Data;
+
+
 /* struct to hold the 'speed' values */
 typedef struct
 {
@@ -93,16 +104,17 @@ int initialise(const char* paramfile, const char* obstaclefile,
 ** timestep calls, in order, the functions:
 ** accelerate_flow(), propagate(), rebound() & collision()
 */
-int timestep(const t_param params, t_speed* cells, t_speed* tmp_cells, int* obstacles);
-int accelerate_flow(const t_param params, t_speed* cells, int* obstacles);
-int propagate(const t_param params, t_speed* cells, t_speed* tmp_cells);
+float timestep(const t_param params, t_speed* cells, t_speed* tmp_cells, int* obstacles, process_Data processData);
+int accelerate_flow(const t_param params, t_speed* cells, int* obstacles, process_Data processData);
+int propagate(const t_param params, t_speed* cells, t_speed* tmp_cells, process_Data processData);
 int rebound(const t_param params, t_speed* cells, t_speed* tmp_cells, int* obstacles);
-int collision(const t_param params, t_speed* cells, t_speed* tmp_cells, int* obstacles);
+float collision(const t_param params, t_speed* cells, t_speed* tmp_cells, int* obstacles, process_Data processData);
 int write_values(const t_param params, t_speed* cells, int* obstacles, float* av_vels);
+int exchange_halos(const t_param params, t_speed* cells, int* obstacles, process_Data processData);
 
 /* finalise, including freeing up allocated memory */
 int finalise(const t_param* params, t_speed** cells_ptr, t_speed** tmp_cells_ptr,
-             int** obstacles_ptr, float** av_vels_ptr);
+             int** obstacles_ptr, float** av_vels_ptr, t_speed** test_cells_ptr, t_speed** slice_cells_ptr);
 
 /* Sum all the densities in the grid.
 ** The total should remain constant from one timestep to the next. */
@@ -133,12 +145,11 @@ int main(int argc, char* argv[])
   float* av_vels   = NULL;     /* a record of the av. velocity computed for each timestep */
   struct timeval timstr;                                                             /* structure to hold elapsed time */
   double tot_tic, tot_toc, init_tic, init_toc, comp_tic, comp_toc, col_tic, col_toc; /* floating point numbers to calculate elapsed wallclock time */
+  process_Data processData;
 
   MPI_Init(&argc, &argv);
-  int nprocs, rank;
-  MPI_Comm_size(MPI_COMM_WORLD, &nprocs);
-  MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-  printf("Hello from rank %d of %d\n", rank, nprocs);
+  MPI_Comm_size(MPI_COMM_WORLD, &processData.nprocs);
+  MPI_Comm_rank(MPI_COMM_WORLD, &processData.rank);
 
   /* parse the command line */
   if (argc != 3)
@@ -157,6 +168,12 @@ int main(int argc, char* argv[])
   init_tic=tot_tic;
   initialise(paramfile, obstaclefile, &params, &cells, &tmp_cells, &obstacles, &av_vels);
 
+  processData.work = params.nx / processData.nprocs;
+
+  processData.startWork = processData.rank * processData.work;
+  processData.endWork = processData.startWork + processData.work;
+
+
   /* Init time stops here, compute time starts*/
   gettimeofday(&timstr, NULL);
   init_toc = timstr.tv_sec + (timstr.tv_usec / 1000000.0);
@@ -164,8 +181,7 @@ int main(int argc, char* argv[])
 
   for (int tt = 0; tt < params.maxIters; tt++)
   {
-    timestep(params, cells, tmp_cells, obstacles);
-    av_vels[tt] = av_velocity(params, cells, obstacles);
+    av_vels[tt] = timestep(params, cells, tmp_cells, obstacles, processData);
 #ifdef DEBUG
     printf("==timestep: %d==\n", tt);
     printf("av velocity: %.12E\n", av_vels[tt]);
@@ -178,37 +194,86 @@ int main(int argc, char* argv[])
   comp_toc = timstr.tv_sec + (timstr.tv_usec / 1000000.0);
   col_tic=comp_toc;
 
+  printf("here %d\n", processData.rank);
+
   // Collate data from ranks here 
+  t_speed* test_cells;
+  t_speed* slice_cells;
+
+  slice_cells = (t_speed*)malloc(sizeof(t_speed) * processData.work * params.ny);
+
+  for (int ii = processData.startWork*params.ny; ii < processData.endWork*params.ny; ii++)
+  {
+    slice_cells[ii - processData.startWork*params.ny] = cells[ii];
+  }
+
+  test_cells = (t_speed*)malloc(sizeof(t_speed) * processData.nprocs * processData.work * params.ny);
+
+  MPI_Gather(slice_cells, processData.work * params.ny * NSPEEDS, MPI_FLOAT, test_cells, processData.work * params.ny * NSPEEDS, MPI_FLOAT, 0, MPI_COMM_WORLD);
+
+  // Collate grid
+  if (processData.rank == 0) {
+      for(int pp = 0; pp < processData.nprocs; pp++){
+        for(int ii = 0; ii < processData.work * params.ny; ii++){;
+          cells[params.ny*processData.work*pp + ii] = test_cells[params.ny*processData.work*pp + ii];
+        }
+        printf("Cell: %d, Speed7: %f", pp*processData.work*params.ny, cells[pp*processData.work*params.ny].speeds[7]);
+      }
+  }
 
   /* Total/collate time stops here.*/
   gettimeofday(&timstr, NULL);
   col_toc = timstr.tv_sec + (timstr.tv_usec / 1000000.0);
   tot_toc = col_toc;
   
-  /* write final values and free memory */
-  printf("==done==\n");
-  printf("Reynolds number:\t\t%.12E\n", calc_reynolds(params, cells, obstacles));
-  printf("Elapsed Init time:\t\t\t%.6lf (s)\n",    init_toc - init_tic);
-  printf("Elapsed Compute time:\t\t\t%.6lf (s)\n", comp_toc - comp_tic);
-  printf("Elapsed Collate time:\t\t\t%.6lf (s)\n", col_toc  - col_tic);
-  printf("Elapsed Total time:\t\t\t%.6lf (s)\n",   tot_toc  - tot_tic);
-  write_values(params, cells, obstacles, av_vels);
-  finalise(&params, &cells, &tmp_cells, &obstacles, &av_vels);
-
+  if (processData.rank == 0){
+    /* write final values and free memory */
+    printf("==done==\n");
+    printf("Reynolds number:\t\t%.12E\n", calc_reynolds(params, cells, obstacles));
+    printf("Elapsed Init time:\t\t\t%.6lf (s)\n",    init_toc - init_tic);
+    printf("Elapsed Compute time:\t\t\t%.6lf (s)\n", comp_toc - comp_tic);
+    printf("Elapsed Collate time:\t\t\t%.6lf (s)\n", col_toc  - col_tic);
+    printf("Elapsed Total time:\t\t\t%.6lf (s)\n",   tot_toc  - tot_tic);
+    write_values(params, cells, obstacles, av_vels);
+  }
+  
+  finalise(&params, &cells, &tmp_cells, &obstacles, &av_vels, &test_cells, &slice_cells);
   MPI_Finalize();
 
   return EXIT_SUCCESS;
 }
 
-int timestep(const t_param params, t_speed* cells, t_speed* tmp_cells, int* obstacles)
+float timestep(const t_param params, t_speed* cells, t_speed* tmp_cells, int* obstacles, process_Data processData)
 {
-  accelerate_flow(params, cells, obstacles);
-  propagate(params, cells, tmp_cells);
-  collision(params, cells, tmp_cells, obstacles);
+  exchange_halos(params, cells, obstacles, processData);
+  accelerate_flow(params, cells, obstacles, processData);
+  propagate(params, cells, tmp_cells, processData);
+  return collision(params, cells, tmp_cells, obstacles, processData);
+}
+
+int exchange_halos(const t_param params, t_speed* cells, int* obstacles, process_Data processData){
+  if (processData.rank == 0){
+    MPI_Sendrecv(&cells[processData.endWork*params.ny], params.ny, MPI_FLOAT, processData.rank + 1, 0, 
+		      &cells[processData.startWork*params.ny - 1], params.ny, MPI_FLOAT, MPI_PROC_NULL, 0, 
+		      MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+  }
+  else if (processData.rank == processData.nprocs - 1){
+    MPI_Sendrecv(&cells[processData.startWork*params.ny], params.ny, MPI_FLOAT, processData.rank - 1, 0, 
+		      &cells[processData.endWork*params.ny + 1], params.ny, MPI_FLOAT, MPI_PROC_NULL, 0, 
+		      MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+  }
+  else{
+    MPI_Sendrecv(&cells[processData.endWork*params.ny], params.ny, MPI_FLOAT, processData.rank + 1, 0, 
+		      &cells[processData.startWork*params.ny - 1], params.ny, MPI_FLOAT, processData.rank - 1, 0, 
+		      MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+    MPI_Sendrecv(&cells[processData.startWork*params.ny], params.ny, MPI_FLOAT, processData.rank - 1, 0, 
+		      &cells[processData.endWork*params.ny + 1], params.ny, MPI_FLOAT, processData.rank + 1, 0, 
+		      MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+  }
   return EXIT_SUCCESS;
 }
 
-int accelerate_flow(const t_param params, t_speed* cells, int* obstacles)
+int accelerate_flow(const t_param params, t_speed* cells, int* obstacles, process_Data processData)
 {
   /* compute weighting factors */
   float w1 = params.density * params.accel / 9.f;
@@ -217,7 +282,7 @@ int accelerate_flow(const t_param params, t_speed* cells, int* obstacles)
   /* modify the 2nd row of the grid */
   int jj = params.ny - 2;
 
-  for (int ii = 0; ii < params.nx; ii++)
+  for (int ii = processData.startWork; ii < processData.endWork + 1; ii++)
   {
     /* if the cell is not occupied and
     ** we don't send a negative density */
@@ -240,12 +305,12 @@ int accelerate_flow(const t_param params, t_speed* cells, int* obstacles)
   return EXIT_SUCCESS;
 }
 
-int propagate(const t_param params, t_speed* cells, t_speed* tmp_cells)
+int propagate(const t_param params, t_speed* cells, t_speed* tmp_cells, process_Data processData)
 {
   /* loop over _all_ cells */
   for (int jj = 0; jj < params.ny; jj++)
   {
-    for (int ii = 0; ii < params.nx; ii++)
+    for (int ii = processData.startWork; ii < processData.endWork + 1; ii++)
     {
       /* determine indices of axis-direction neighbours
       ** respecting periodic boundary conditions (wrap around) */
@@ -271,7 +336,7 @@ int propagate(const t_param params, t_speed* cells, t_speed* tmp_cells)
   return EXIT_SUCCESS;
 }
 
-int collision(const t_param params, t_speed* cells, t_speed* tmp_cells, int* obstacles)
+float collision(const t_param params, t_speed* cells, t_speed* tmp_cells, int* obstacles, process_Data processData)
 {
   const float c_sq = 1.f / 3.f; /* square of speed of sound */
   const float w0 = 4.f / 9.f;  /* weighting factor */
@@ -281,13 +346,19 @@ int collision(const t_param params, t_speed* cells, t_speed* tmp_cells, int* obs
   const float c_sq_sq_2f = 2.f * c_sq * c_sq;
   const float c_sq_2f = 2.f * c_sq;
 
+  int    tot_cells = 0;  /* no. of cells used in calculation */
+  float tot_u;          /* accumulated magnitudes of velocity for each cell */
+
+  /* initialise */
+  tot_u = 0.f;
+
   /* loop over the cells in the grid
   ** NB the collision step is called after
   ** the propagate step and so values of interest
   ** are in the scratch-space grid */
   for (int jj = 0; jj < params.ny; jj++)
   {
-    for (int ii = 0; ii < params.nx; ii++)
+    for (int ii = processData.startWork; ii < processData.endWork + 1; ii++)
     {
       if (obstacles[jj*params.nx + ii])
       {
@@ -382,11 +453,73 @@ int collision(const t_param params, t_speed* cells, t_speed* tmp_cells, int* obs
                                                   + params.omega
                                                   * (d_equ[kk] - tmp_cells[ii + jj*params.nx].speeds[kk]);
         }
+
+        /* recompute local density total */
+        local_density = 0.f;
+
+        for (int kk = 0; kk < NSPEEDS; kk++)
+        {
+          local_density += cells[ii + jj*params.nx].speeds[kk];
+        }
+
+        /* x-component of velocity */
+        u_x = (cells[ii + jj*params.nx].speeds[1]
+                      + cells[ii + jj*params.nx].speeds[5]
+                      + cells[ii + jj*params.nx].speeds[8]
+                      - (cells[ii + jj*params.nx].speeds[3]
+                         + cells[ii + jj*params.nx].speeds[6]
+                         + cells[ii + jj*params.nx].speeds[7]))
+                     / local_density;
+        /* compute y velocity component */
+        u_y = (cells[ii + jj*params.nx].speeds[2]
+                      + cells[ii + jj*params.nx].speeds[5]
+                      + cells[ii + jj*params.nx].speeds[6]
+                      - (cells[ii + jj*params.nx].speeds[4]
+                         + cells[ii + jj*params.nx].speeds[7]
+                         + cells[ii + jj*params.nx].speeds[8]))
+                     / local_density;
+        /* accumulate the norm of x- and y- velocity components */
+        tot_u += sqrtf((u_x * u_x) + (u_y * u_y));
+        /* increase counter of inspected cells */
+        ++tot_cells;
       }
     }
   }
 
-  return EXIT_SUCCESS;
+  float tot_tot_u = tot_u;
+  int tot_tot_cells = tot_cells;
+
+  MPI_Reduce(&tot_u, &tot_tot_u, 1, MPI_FLOAT, MPI_SUM, 0,MPI_COMM_WORLD);
+  MPI_Reduce(&tot_cells, &tot_tot_cells, 1, MPI_INT, MPI_SUM, 0,MPI_COMM_WORLD);
+
+  if (processData.rank == 0){
+    tot_u = tot_tot_u;
+    tot_cells = tot_tot_cells;
+  }
+
+  /*if (processData.rank == 0){
+    MPI_Recv(&tot_u, 1, MPI_FLOAT, processData.rank + 1, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+    MPI_Recv(&tot_cells, 1, MPI_INT, processData.rank + 1, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+
+    tot_u += tot_tot_u;
+    tot_cells += tot_tot_cells;
+  }
+  else if (processData.rank == processData.nprocs - 1){
+    MPI_Send(&tot_u, 1, MPI_FLOAT, processData.rank - 1, 0, MPI_COMM_WORLD);
+    MPI_Send(&tot_cells, 1, MPI_INT, processData.rank - 1, 0, MPI_COMM_WORLD);
+  }
+  else{
+    MPI_Recv(&tot_u, 1, MPI_FLOAT, processData.rank + 1, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+    MPI_Recv(&tot_cells, 1, MPI_INT, processData.rank + 1, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+
+    tot_u += tot_tot_u;
+    tot_cells += tot_tot_cells;
+    
+    MPI_Send(&tot_u, 1, MPI_FLOAT, processData.rank - 1, 0, MPI_COMM_WORLD);
+    MPI_Send(&tot_cells, 1, MPI_INT, processData.rank - 1, 0, MPI_COMM_WORLD);
+  }*/
+
+  return tot_u / (float)tot_cells;
 }
 
 float av_velocity(const t_param params, t_speed* cells, int* obstacles)
@@ -596,7 +729,7 @@ int initialise(const char* paramfile, const char* obstaclefile,
 }
 
 int finalise(const t_param* params, t_speed** cells_ptr, t_speed** tmp_cells_ptr,
-             int** obstacles_ptr, float** av_vels_ptr)
+             int** obstacles_ptr, float** av_vels_ptr, t_speed** test_cells_ptr, t_speed** slice_cells_ptr)
 {
   /*
   ** free up allocated memory
@@ -612,6 +745,12 @@ int finalise(const t_param* params, t_speed** cells_ptr, t_speed** tmp_cells_ptr
 
   free(*av_vels_ptr);
   *av_vels_ptr = NULL;
+
+  free(*test_cells_ptr);
+  *test_cells_ptr = NULL;
+
+  free(*slice_cells_ptr);
+  *slice_cells_ptr = NULL;
 
   return EXIT_SUCCESS;
 }
