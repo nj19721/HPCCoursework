@@ -72,6 +72,7 @@ typedef struct
   float density;       /* density per link */
   float accel;         /* density redistribution */
   float omega;         /* relaxation parameter */
+  int freeCells;       /* total cells without obstacles */
 } t_param;
 
 typedef struct
@@ -194,7 +195,13 @@ int main(int argc, char* argv[])
   comp_toc = timstr.tv_sec + (timstr.tv_usec / 1000000.0);
   col_tic=comp_toc;
 
-  printf("here %d\n", processData.rank);
+  MPI_Reduce(&av_vels, &av_vels, params.maxIters, MPI_FLOAT, MPI_SUM, 0, MPI_COMM_WORLD);
+
+  if (processData.rank == 0){
+    for (int tt = 0; tt < params.maxIters; tt++){
+      av_vels[tt] = av_vels[tt] / params.freeCells;
+    }
+  }
 
   // Collate data from ranks here 
   t_speed* test_cells;
@@ -346,7 +353,6 @@ float collision(const t_param params, t_speed* cells, t_speed* tmp_cells, int* o
   const float c_sq_sq_2f = 2.f * c_sq * c_sq;
   const float c_sq_2f = 2.f * c_sq;
 
-  int    tot_cells = 0;  /* no. of cells used in calculation */
   float tot_u;          /* accumulated magnitudes of velocity for each cell */
 
   /* initialise */
@@ -480,24 +486,10 @@ float collision(const t_param params, t_speed* cells, t_speed* tmp_cells, int* o
                      / local_density;
         /* accumulate the norm of x- and y- velocity components */
         tot_u += sqrtf((u_x * u_x) + (u_y * u_y));
-        /* increase counter of inspected cells */
-        ++tot_cells;
       }
     }
   }
-
-  float tot_tot_u = tot_u;
-  int tot_tot_cells = tot_cells;
-
-  MPI_Reduce(&tot_u, &tot_tot_u, 1, MPI_FLOAT, MPI_SUM, 0, MPI_COMM_WORLD);
-  MPI_Reduce(&tot_cells, &tot_tot_cells, 1, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD);
-
-  if (processData.rank == 0){
-    tot_u = tot_tot_u;
-    tot_cells = tot_tot_cells;
-  }
-
-  return tot_u / (float)tot_cells;
+  return tot_u;
 }
 
 float av_velocity(const t_param params, t_speed* cells, int* obstacles)
@@ -678,6 +670,7 @@ int initialise(const char* paramfile, const char* obstaclefile,
     die(message, __LINE__, __FILE__);
   }
 
+  params->freeCells = params->nx * params->ny;
   /* read-in the blocked cells list */
   while ((retval = fscanf(fp, "%d %d %d\n", &xx, &yy, &blocked)) != EOF)
   {
@@ -692,6 +685,7 @@ int initialise(const char* paramfile, const char* obstaclefile,
 
     /* assign to array */
     (*obstacles_ptr)[xx + yy*params->nx] = blocked;
+    params->freeCells--;
   }
 
   /* and close the file */
