@@ -219,10 +219,12 @@ int main(int argc, char* argv[])
       }
   }
 
+  float av_vel;
   for (int tt = 0; tt < params.maxIters; tt++){
-    MPI_Reduce(&av_vels[tt], &av_vels[tt], 1, MPI_FLOAT, MPI_SUM, 0, MPI_COMM_WORLD);
+    av_vel = av_vels[tt];
+    MPI_Reduce(&av_vel, &av_vel, 1, MPI_FLOAT, MPI_SUM, 0, MPI_COMM_WORLD);
     if (processData.rank == 0){
-      av_vels[tt] = av_vels[tt] / params.freeCells;
+      av_vels[tt] = av_vel / params.freeCells;
     }
   }
 
