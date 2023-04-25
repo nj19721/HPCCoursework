@@ -151,6 +151,8 @@ int main(int argc, char* argv[])
   MPI_Comm_size(MPI_COMM_WORLD, &processData.nprocs);
   MPI_Comm_rank(MPI_COMM_WORLD, &processData.rank);
 
+  printf("Hello from rank %d of %d\n", processData.rank, processData.nprocs);
+
   /* parse the command line */
   if (argc != 3)
   {
@@ -182,11 +184,11 @@ int main(int argc, char* argv[])
   for (int tt = 0; tt < params.maxIters; tt++)
   {
     av_vels[tt] = timestep(params, cells, tmp_cells, obstacles, processData);
-#ifdef DEBUG
+//#ifdef DEBUG
     printf("==timestep: %d==\n", tt);
     printf("av velocity: %.12E\n", av_vels[tt]);
     printf("tot density: %.12E\n", total_density(params, cells));
-#endif
+//#endif
   }
   
   /* Compute time stops here, collate time starts*/
@@ -236,7 +238,7 @@ int main(int argc, char* argv[])
     printf("Elapsed Total time:\t\t\t%.6lf (s)\n",   tot_toc  - tot_tic);
     write_values(params, cells, obstacles, av_vels);
   }
-  
+
   finalise(&params, &cells, &tmp_cells, &obstacles, &av_vels, &test_cells, &slice_cells);
   MPI_Finalize();
 
@@ -489,35 +491,13 @@ float collision(const t_param params, t_speed* cells, t_speed* tmp_cells, int* o
   float tot_tot_u = tot_u;
   int tot_tot_cells = tot_cells;
 
-  MPI_Reduce(&tot_u, &tot_tot_u, 1, MPI_FLOAT, MPI_SUM, 0,MPI_COMM_WORLD);
-  MPI_Reduce(&tot_cells, &tot_tot_cells, 1, MPI_INT, MPI_SUM, 0,MPI_COMM_WORLD);
+  MPI_Reduce(&tot_u, &tot_tot_u, 1, MPI_FLOAT, MPI_SUM, 0, MPI_COMM_WORLD);
+  MPI_Reduce(&tot_cells, &tot_tot_cells, 1, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD);
 
   if (processData.rank == 0){
     tot_u = tot_tot_u;
     tot_cells = tot_tot_cells;
   }
-
-  /*if (processData.rank == 0){
-    MPI_Recv(&tot_u, 1, MPI_FLOAT, processData.rank + 1, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-    MPI_Recv(&tot_cells, 1, MPI_INT, processData.rank + 1, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-
-    tot_u += tot_tot_u;
-    tot_cells += tot_tot_cells;
-  }
-  else if (processData.rank == processData.nprocs - 1){
-    MPI_Send(&tot_u, 1, MPI_FLOAT, processData.rank - 1, 0, MPI_COMM_WORLD);
-    MPI_Send(&tot_cells, 1, MPI_INT, processData.rank - 1, 0, MPI_COMM_WORLD);
-  }
-  else{
-    MPI_Recv(&tot_u, 1, MPI_FLOAT, processData.rank + 1, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-    MPI_Recv(&tot_cells, 1, MPI_INT, processData.rank + 1, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-
-    tot_u += tot_tot_u;
-    tot_cells += tot_tot_cells;
-    
-    MPI_Send(&tot_u, 1, MPI_FLOAT, processData.rank - 1, 0, MPI_COMM_WORLD);
-    MPI_Send(&tot_cells, 1, MPI_INT, processData.rank - 1, 0, MPI_COMM_WORLD);
-  }*/
 
   return tot_u / (float)tot_cells;
 }
