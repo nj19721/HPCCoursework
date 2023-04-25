@@ -195,14 +195,6 @@ int main(int argc, char* argv[])
   comp_toc = timstr.tv_sec + (timstr.tv_usec / 1000000.0);
   col_tic=comp_toc;
 
-  MPI_Reduce(&av_vels, &av_vels, params.maxIters, MPI_FLOAT, MPI_SUM, 0, MPI_COMM_WORLD);
-
-  if (processData.rank == 0){
-    for (int tt = 0; tt < params.maxIters; tt++){
-      av_vels[tt] = av_vels[tt] / params.freeCells;
-    }
-  }
-
   // Collate data from ranks here 
   t_speed* test_cells;
   t_speed* slice_cells;
@@ -224,8 +216,14 @@ int main(int argc, char* argv[])
         for(int ii = 0; ii < processData.work * params.ny; ii++){;
           cells[params.ny*processData.work*pp + ii] = test_cells[params.ny*processData.work*pp + ii];
         }
-        printf("Cell: %d, Speed7: %f", pp*processData.work*params.ny, cells[pp*processData.work*params.ny].speeds[7]);
       }
+  }
+
+  for (int tt = 0; tt < params.maxIters; tt++){
+    MPI_Reduce(&av_vels[tt], &av_vels[tt], 1, MPI_FLOAT, MPI_SUM, 0, MPI_COMM_WORLD);
+    if (processData.rank == 0){
+      av_vels[tt] = av_vels[tt] / params.freeCells;
+    }
   }
 
   /* Total/collate time stops here.*/
