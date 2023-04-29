@@ -87,6 +87,7 @@ typedef struct
   int downNeighbour; /* rank below */
   int accelFlowRow; /* tracks which process has 2nd row of grid to accelerate flow and which row it is in slice */
   int accelFlowRank; /* tracks which rank accelerates flow */
+  int startVal; /* holds what point of the global grid local work starts - 1 */
 } process_Data;
 
 
@@ -191,6 +192,7 @@ int main(int argc, char* argv[])
   for (int tt = 0; tt < params.maxIters; tt++)
   {
     av_vels[tt] = timestep(params, cells, tmp_cells, obstacles, processData);
+    //printf("finished %d, %d\n", tt, processData.rank);
   #ifdef DEBUG
   if (processData.rank == 0){
     printf("==timestep: %d==\n", tt);
@@ -213,11 +215,22 @@ int main(int argc, char* argv[])
   //pack cells without halos
   slice_cells = (t_speed*)malloc(sizeof(t_speed) * processData.work * params.nx);
 
-  for (int jj = processData.startWork; jj < processData.endWork; jj++)
-  {
-    for (int ii = 0; ii < params.nx; ii++)
+  if(processData.rank == 0){
+    for (int jj = processData.startWork; jj < processData.endWork; jj++)
     {
-      slice_cells[ii + (jj - 1)*params.nx] = cells[ii + jj*params.nx];
+      for (int ii = 0; ii < params.nx; ii++)
+      {
+        slice_cells[ii + jj*params.nx] = cells[ii + jj*params.nx];
+      }
+    }
+  }
+  else{
+    for (int jj = processData.startWork; jj < processData.endWork; jj++)
+    {
+      for (int ii = 0; ii < params.nx; ii++)
+      {
+        slice_cells[ii + (jj - 1)*params.nx] = cells[ii + jj*params.nx];
+      }
     }
   }
 
@@ -314,9 +327,9 @@ int propagate(const t_param params, t_speed* cells, t_speed* tmp_cells, process_
     {
       /* determine indices of axis-direction neighbours
       ** respecting periodic boundary conditions (wrap around) */
-      int y_n = (jj + 1) % processData.maxRows;
+      int y_n = (jj + 1) % params.ny;
       int x_e = (ii + 1) % params.nx;
-      int y_s = (jj == 0) ? (jj + processData.maxRows - 1) : (jj - 1);
+      int y_s = (jj == 0) ? (jj + params.ny - 1) : (jj - 1);
       int x_w = (ii == 0) ? (ii + params.nx - 1) : (ii - 1);
       /* propagate densities from neighbouring cells, following
       ** appropriate directions of travel and writing into
@@ -359,7 +372,7 @@ float collision(const t_param params, t_speed* cells, t_speed* tmp_cells, int* o
   {
     for (int ii = 0; ii < params.nx; ii++)
     {
-      if (obstacles[ii + jj*params.nx])
+      if (obstacles[ii + (jj + processData.startVal)*params.nx])
       {
         /* called after propagate, so taking values from scratch space
         ** mirroring, and writing into main grid */
@@ -462,20 +475,20 @@ float collision(const t_param params, t_speed* cells, t_speed* tmp_cells, int* o
         }
 
         /* compute x velocity component */
-        u_x = (tmp_cells[ii + jj*params.nx].speeds[1]
-                      + tmp_cells[ii + jj*params.nx].speeds[5]
-                      + tmp_cells[ii + jj*params.nx].speeds[8]
-                      - (tmp_cells[ii + jj*params.nx].speeds[3]
-                         + tmp_cells[ii + jj*params.nx].speeds[6]
-                         + tmp_cells[ii + jj*params.nx].speeds[7]))
+        u_x = (cells[ii + jj*params.nx].speeds[1]
+                      + cells[ii + jj*params.nx].speeds[5]
+                      + cells[ii + jj*params.nx].speeds[8]
+                      - (cells[ii + jj*params.nx].speeds[3]
+                         + cells[ii + jj*params.nx].speeds[6]
+                         + cells[ii + jj*params.nx].speeds[7]))
                      / local_density;
         /* compute y velocity component */
-        u_y = (tmp_cells[ii + jj*params.nx].speeds[2]
-                      + tmp_cells[ii + jj*params.nx].speeds[5]
-                      + tmp_cells[ii + jj*params.nx].speeds[6]
-                      - (tmp_cells[ii + jj*params.nx].speeds[4]
-                         + tmp_cells[ii + jj*params.nx].speeds[7]
-                         + tmp_cells[ii + jj*params.nx].speeds[8]))
+        u_y = (cells[ii + jj*params.nx].speeds[2]
+                      + cells[ii + jj*params.nx].speeds[5]
+                      + cells[ii + jj*params.nx].speeds[6]
+                      - (cells[ii + jj*params.nx].speeds[4]
+                         + cells[ii + jj*params.nx].speeds[7]
+                         + cells[ii + jj*params.nx].speeds[8]))
                      / local_density;
 
         // accumulate the norm of x- and y- velocity components */
@@ -533,7 +546,6 @@ float av_velocity(const t_param params, t_speed* cells, int* obstacles)
       }
     }
   }
-  printf("tot_cells: %d", tot_cells);
 
   return tot_u / (float)tot_cells;
 }
@@ -612,7 +624,15 @@ int initialise(const char* paramfile, const char* obstaclefile,
   if(params->ny % pData->nprocs != 0 && pData->rank < params->ny % pData->nprocs){
     pData->work++;
   }
-
+  pData->startVal = pData->rank * pData->work;
+  if(params->ny % pData->nprocs != 0 && pData->rank >= params->ny % pData->nprocs){
+    for(int x = 0; x < pData->rank; x++){
+      if(x < (params->ny % pData->nprocs)){
+        pData->startVal++;
+      }
+    }
+  }
+  if(pData->rank != 0) pData->startVal--;
   //pData.startWork = pData.rank * pData.work;
   //pData.endWork = pData.startWork + pData.work;
  
@@ -621,6 +641,7 @@ int initialise(const char* paramfile, const char* obstaclefile,
   pData->maxRows = pData->work + 2;
   if (pData->rank == 0){
     pData->startWork -= 1;
+    pData->endWork -= 1;
     pData->maxRows = params->ny;
   }
   if(pData->work > 1){
@@ -633,7 +654,7 @@ int initialise(const char* paramfile, const char* obstaclefile,
   };
 
   //printf("sw: %d, ew: %d, w: %d, ew - sw: %d, rows: %d", pData->startWork, pData->endWork, pData->work, pData->endWork - pData->startWork, pData->work + 2);
-  printf("rows: %d\n", pData->work + 2);
+  //printf("rank: %d, work: %d, startval: %d\n", pData->rank, pData->work, pData->startVal);
 
   if (pData->rank == 0){
     /* main grid */
@@ -641,6 +662,11 @@ int initialise(const char* paramfile, const char* obstaclefile,
     /* 'helper' grid, used as scratch space */
     *tmp_cells_ptr = (t_speed*)malloc(sizeof(t_speed) * (params->ny * params->nx));
   }
+  /*else if (pData->rank == pData->nprocs - 1){
+    *cells_ptr = (t_speed*)malloc(sizeof(t_speed) * (params->nx * (pData->work + 1)));
+
+    *tmp_cells_ptr = (t_speed*)malloc(sizeof(t_speed) * (params->nx * (pData->work + 1)));
+  }*/
   else{
     *cells_ptr = (t_speed*)malloc(sizeof(t_speed) * (params->nx * (pData->work + 2)));
     //'helper' grid, used as scratch space
@@ -664,7 +690,7 @@ int initialise(const char* paramfile, const char* obstaclefile,
   int indexWithHaloS = pData->startWork - 1;
   int indexWithHaloE = pData->endWork + 1;
   if(pData->rank == 0) indexWithHaloS = pData->startWork;
-  else if(pData->rank == pData->nprocs - 1) indexWithHaloE = pData->endWork;
+  //else if(pData->rank == pData->nprocs - 1) indexWithHaloE = pData->endWork;
 
   for (int jj = indexWithHaloS; jj < indexWithHaloE; jj++)
     {
