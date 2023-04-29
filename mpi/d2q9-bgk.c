@@ -630,7 +630,7 @@ int initialise(const char* paramfile, const char* obstaclefile,
   };
 
   //printf("sw: %d, ew: %d, w: %d, ew - sw: %d, rows: %d", pData->startWork, pData->endWork, pData->work, pData->endWork - pData->startWork, pData->work + 2);
-  rintf("rows: %d\n", pData->work + 2);
+  printf("rows: %d\n", pData->work + 2);
 
   if (pData->rank == 0){
     /* main grid */
