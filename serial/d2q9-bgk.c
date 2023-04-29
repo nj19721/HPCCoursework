@@ -158,11 +158,11 @@ int main(int argc, char* argv[])
   {
     av_vels[tt] = timestep(params, cells, tmp_cells, obstacles);
     //av_vels[tt] = av_velocity(params, cells, obstacles);
-//#ifdef DEBUG
+#ifdef DEBUG
     printf("==timestep: %d==\n", tt);
     printf("av velocity: %.12E\n", av_vels[tt]);
     printf("tot density: %.12E\n", total_density(params, cells));
-//#endif
+#endif
   }
   
   /* Compute time stops here, collate time starts*/
@@ -411,6 +411,7 @@ float reboundCollisionAVVels(const t_param params, t_speed* cells, t_speed* tmp_
       }
     }
   }
+  printf("tot_cells: %d\n", tot_cells);
   return tot_u / (float)tot_cells;
 }
 
