@@ -629,6 +629,8 @@ int initialise(const char* paramfile, const char* obstaclefile,
     pData->accelFlowRow = pData->startWork;
   };
 
+  printf("sw: %d, ew: %d, w: %d, ew - sw: %d, rows: %d", pData->startWork, pData->endWork, pData->work, pData->endWork - pData->startWork, pData->work + 2)
+
   if (pData->rank == 0){
     /* main grid */
     *cells_ptr = (t_speed*)malloc(sizeof(t_speed) * (params->ny * params->nx));
