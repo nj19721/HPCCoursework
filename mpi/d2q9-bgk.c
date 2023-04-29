@@ -218,27 +218,23 @@ int main(int argc, char* argv[])
     }
   }
 
-  printf("sliced cells %d\n", processData.rank);
-
   test_cells = (t_speed*)malloc(sizeof(t_speed) * params.ny * params.nx);
 
   MPI_Gather(slice_cells, processData.work * params.nx * NSPEEDS, MPI_FLOAT, test_cells, processData.work * params.nx * NSPEEDS, MPI_FLOAT, 0, MPI_COMM_WORLD);
 
-  printf("gathered cells %d\n", processData.rank);
-
   // Collate grid
-  if (processData.rank == 0) {
-      for(int pp = 0; pp < processData.nprocs; pp++){
-        for(int ii = 0; ii < processData.work * params.nx; ii++){;
-          cells[params.nx*processData.work*pp + ii] = test_cells[params.nx*processData.work*pp + ii];
-        }
+  if (processData.rank == 0){
+    for (int jj = processData.startWork; jj < processData.endWork; jj++)
+    {
+      for (int ii = 0; ii < params.nx; ii++)
+      {
+        ells[ii + jj*params.nx] = test_cells[ii + jj*params.nx];
       }
+    }
   }
 
-  printf("before reduction");
   float final_av_vels[params.maxIters];
   MPI_Reduce(av_vels, final_av_vels, params.maxIters, MPI_FLOAT, MPI_SUM, 0, MPI_COMM_WORLD);
-  printf("reduced successfully");
   if (processData.rank == 0){
     for (int tt = 0; tt < params.maxIters; tt++){
       av_vels[tt] = final_av_vels[tt] / params.freeCells;
