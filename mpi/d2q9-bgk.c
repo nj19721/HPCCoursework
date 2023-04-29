@@ -617,7 +617,7 @@ int initialise(const char* paramfile, const char* obstaclefile,
   pData->maxRows = pData->work + 2;
   if (pData->rank == 0){
     pData->startWork -= 1;
-    pData->endWork = params.ny
+    pData->endWork = params->ny
     pData->maxRows = params->ny;
   }
   if(pData->work > 1){
@@ -630,7 +630,7 @@ int initialise(const char* paramfile, const char* obstaclefile,
   };
 
   pData->accelFlowRank = 0;
-  pData->accelFlowRow = params.ny - 2;
+  pData->accelFlowRow = params->ny - 2;
 
   if (pData->rank == 0){
     /* main grid */
@@ -660,8 +660,8 @@ int initialise(const char* paramfile, const char* obstaclefile,
 
   int indexWithHaloS = pData->startWork - 1;
   int indexWithHaloE = pData->startWork + 1;
-  if(pData.rank == 0) indexWithHaloS = pData->startWork;
-  else if(pData.rank == pData->nprocs - 1) indexWithHaloE = pData->endWork;
+  if(pData->rank == 0) indexWithHaloS = pData->startWork;
+  else if(pData->rank == pData->nprocs - 1) indexWithHaloE = pData->endWork;
 
   //CHANGED FOR TEST PLS CHANGE BACK  
   for (int jj = 0; jj < params->ny; jj++)
