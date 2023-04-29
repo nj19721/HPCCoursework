@@ -214,7 +214,7 @@ int main(int argc, char* argv[])
   {
     for (int ii = 0; ii < params.nx; ii++)
     {
-      slice_cells[ii + jj*params.nx] = cells[ii + jj*params.nx];
+      slice_cells[ii + (jj - 1)*params.nx] = cells[ii + jj*params.nx];
     }
   }
 
@@ -222,7 +222,7 @@ int main(int argc, char* argv[])
 
   test_cells = (t_speed*)malloc(sizeof(t_speed) * params.ny * params.nx);
 
-  MPI_Gather(&slice_cells, processData.work * params.nx * NSPEEDS, MPI_FLOAT, &test_cells, processData.work * params.nx * NSPEEDS, MPI_FLOAT, 0, MPI_COMM_WORLD);
+  MPI_Gather(slice_cells, processData.work * params.nx * NSPEEDS, MPI_FLOAT, test_cells, processData.work * params.nx * NSPEEDS, MPI_FLOAT, 0, MPI_COMM_WORLD);
 
   printf("gathered cells %d\n", processData.rank);
 
