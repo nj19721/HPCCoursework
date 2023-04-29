@@ -208,7 +208,7 @@ int main(int argc, char* argv[])
   // Collate data from ranks here 
   //t_speed* test_cells;
   t_speed* slice_cells;
-
+  /*
   //pack cells without halos
   slice_cells = (t_speed*)malloc(sizeof(t_speed) * processData.work * params.nx);
 
@@ -223,20 +223,9 @@ int main(int argc, char* argv[])
   //test_cells = (t_speed*)malloc(sizeof(t_speed) * params.ny * params.nx);
 
   MPI_Gather(slice_cells, processData.work * params.nx * NSPEEDS, MPI_FLOAT, cells, processData.work * params.nx * NSPEEDS, MPI_FLOAT, 0, MPI_COMM_WORLD);
-
-  // Collate grid
-  /*if (processData.rank == 0){
-    for (int jj = 0; jj < params.ny; jj++)
-    {
-      for (int ii = 0; ii < params.nx; ii++)
-      {
-        cells[ii + jj*params.nx] = test_cells[ii + jj*params.nx];
-      }
-    }
-  }*/
-
+  */
   float final_av_vels[params.maxIters];
-  MPI_Reduce(av_vels, final_av_vels, params.maxIters, MPI_FLOAT, MPI_SUM, 0, MPI_COMM_WORLD);
+  //MPI_Reduce(av_vels, final_av_vels, params.maxIters, MPI_FLOAT, MPI_SUM, 0, MPI_COMM_WORLD);
   if (processData.rank == 0){
     for (int tt = 0; tt < params.maxIters; tt++){
       av_vels[tt] = final_av_vels[tt] / params.freeCells;
@@ -628,6 +617,7 @@ int initialise(const char* paramfile, const char* obstaclefile,
   pData->maxRows = pData->work + 2;
   if (pData->rank == 0){
     pData->startWork -= 1;
+    pData->endWork = params.ny
     pData->maxRows = params->ny;
   }
   if(pData->work > 1){
@@ -638,6 +628,9 @@ int initialise(const char* paramfile, const char* obstaclefile,
     pData->accelFlowRank = pData->nprocs - 2;
     pData->accelFlowRow = pData->startWork;
   };
+
+  pData->accelFlowRank = 0;
+  pData->accelFlowRow = params.ny - 2;
 
   if (pData->rank == 0){
     /* main grid */
@@ -665,7 +658,13 @@ int initialise(const char* paramfile, const char* obstaclefile,
   float w1 = params->density      / 9.f;
   float w2 = params->density      / 36.f;
 
-  for (int jj = pData->startWork - 1; jj < pData->endWork + 1; jj++)
+  int indexWithHaloS = pData->startWork - 1;
+  int indexWithHaloE = pData->startWork + 1;
+  if(pData.rank == 0) indexWithHaloS = pData->startWork;
+  else if(pData.rank == pData->nprocs - 1) indexWithHaloE = pData->endWork;
+
+  //CHANGED FOR TEST PLS CHANGE BACK  
+  for (int jj = 0; jj < params->ny; jj++)
     {
       for (int ii = 0; ii < params->nx; ii++)
       {
