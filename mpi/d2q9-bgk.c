@@ -717,7 +717,7 @@ int initialise(const char* paramfile, const char* obstaclefile,
     (*obstacles_ptr)[xx + yy*params->nx] = blocked;
     params->freeCells--;
   }
-  //printf("freecells: %d\n", params->freeCells);
+  if (pData->rank == 0) printf("freecells: %d\n", params->freeCells);
 
   /* and close the file */
   fclose(fp);
