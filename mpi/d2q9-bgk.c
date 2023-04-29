@@ -665,7 +665,7 @@ int initialise(const char* paramfile, const char* obstaclefile,
   float w1 = params->density      / 9.f;
   float w2 = params->density      / 36.f;
 
-  for (int jj = pData->startWork; jj < pData->endWork; jj++)
+  for (int jj = pData->startWork - 1; jj < pData->endWork + 1; jj++)
     {
       for (int ii = 0; ii < params->nx; ii++)
       {
