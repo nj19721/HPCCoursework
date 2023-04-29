@@ -617,7 +617,7 @@ int initialise(const char* paramfile, const char* obstaclefile,
   pData->maxRows = pData->work + 2;
   if (pData->rank == 0){
     pData->startWork -= 1;
-    pData->endWork = params->ny
+    pData->endWork = params->ny;
     pData->maxRows = params->ny;
   }
   if(pData->work > 1){
