@@ -314,9 +314,9 @@ int propagate(const t_param params, t_speed* cells, t_speed* tmp_cells, process_
     {
       /* determine indices of axis-direction neighbours
       ** respecting periodic boundary conditions (wrap around) */
-      int y_n = (jj + 1) % params.ny;
+      int y_n = (jj + 1) % processData.maxRows;
       int x_e = (ii + 1) % params.nx;
-      int y_s = (jj == 0) ? (jj + params.ny - 1) : (jj - 1);
+      int y_s = (jj == 0) ? (jj + processData.maxRows - 1) : (jj - 1);
       int x_w = (ii == 0) ? (ii + params.nx - 1) : (ii - 1);
       /* propagate densities from neighbouring cells, following
       ** appropriate directions of travel and writing into
@@ -629,7 +629,7 @@ int initialise(const char* paramfile, const char* obstaclefile,
     pData->accelFlowRow = pData->startWork;
   };
 
-  printf("sw: %d, ew: %d, w: %d, ew - sw: %d, rows: %d", pData->startWork, pData->endWork, pData->work, pData->endWork - pData->startWork, pData->work + 2);
+  //printf("sw: %d, ew: %d, w: %d, ew - sw: %d, rows: %d", pData->startWork, pData->endWork, pData->work, pData->endWork - pData->startWork, pData->work + 2);
 
   if (pData->rank == 0){
     /* main grid */
