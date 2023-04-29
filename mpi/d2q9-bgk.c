@@ -204,7 +204,7 @@ int main(int argc, char* argv[])
   col_tic=comp_toc;
 
   // Collate data from ranks here 
-  t_speed* test_cells;
+  //t_speed* test_cells;
   t_speed* slice_cells;
 
   //pack cells without halos
