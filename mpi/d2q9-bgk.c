@@ -224,7 +224,7 @@ int main(int argc, char* argv[])
 
   // Collate grid
   if (processData.rank == 0){
-    for (int jj = processData.startWork; jj < processData.endWork; jj++)
+    for (int jj = 0; jj < params.ny; jj++)
     {
       for (int ii = 0; ii < params.nx; ii++)
       {
