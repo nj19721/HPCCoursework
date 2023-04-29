@@ -218,12 +218,12 @@ int main(int argc, char* argv[])
     }
   }
 
-  test_cells = (t_speed*)malloc(sizeof(t_speed) * params.ny * params.nx);
+  //test_cells = (t_speed*)malloc(sizeof(t_speed) * params.ny * params.nx);
 
-  MPI_Gather(slice_cells, processData.work * params.nx * NSPEEDS, MPI_FLOAT, test_cells, processData.work * params.nx * NSPEEDS, MPI_FLOAT, 0, MPI_COMM_WORLD);
+  MPI_Gather(slice_cells, processData.work * params.nx * NSPEEDS, MPI_FLOAT, cells, processData.work * params.nx * NSPEEDS, MPI_FLOAT, 0, MPI_COMM_WORLD);
 
   // Collate grid
-  if (processData.rank == 0){
+  /*if (processData.rank == 0){
     for (int jj = 0; jj < params.ny; jj++)
     {
       for (int ii = 0; ii < params.nx; ii++)
@@ -231,7 +231,7 @@ int main(int argc, char* argv[])
         cells[ii + jj*params.nx] = test_cells[ii + jj*params.nx];
       }
     }
-  }
+  }*/
 
   float final_av_vels[params.maxIters];
   MPI_Reduce(av_vels, final_av_vels, params.maxIters, MPI_FLOAT, MPI_SUM, 0, MPI_COMM_WORLD);
