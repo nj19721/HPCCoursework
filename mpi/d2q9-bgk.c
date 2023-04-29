@@ -228,7 +228,7 @@ int main(int argc, char* argv[])
     {
       for (int ii = 0; ii < params.nx; ii++)
       {
-        ells[ii + jj*params.nx] = test_cells[ii + jj*params.nx];
+        cells[ii + jj*params.nx] = test_cells[ii + jj*params.nx];
       }
     }
   }
