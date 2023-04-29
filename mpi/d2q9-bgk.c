@@ -659,12 +659,12 @@ int initialise(const char* paramfile, const char* obstaclefile,
   float w2 = params->density      / 36.f;
 
   int indexWithHaloS = pData->startWork - 1;
-  int indexWithHaloE = pData->startWork + 1;
+  int indexWithHaloE = pData->endWork + 1;
   if(pData->rank == 0) indexWithHaloS = pData->startWork;
   else if(pData->rank == pData->nprocs - 1) indexWithHaloE = pData->endWork;
 
-  //CHANGED FOR TEST PLS CHANGE BACK  
-  for (int jj = 0; jj < params->ny; jj++)
+  //CHANGED FOR TEST PLS CHANGE BACK
+  for (int jj = indexWithHaloS; jj < indexWithHaloE; jj++)
     {
       for (int ii = 0; ii < params->nx; ii++)
       {
