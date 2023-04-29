@@ -120,7 +120,7 @@ int exchange_halos(const t_param params, t_speed* cells, int* obstacles, process
 
 /* finalise, including freeing up allocated memory */
 int finalise(const t_param* params, t_speed** cells_ptr, t_speed** tmp_cells_ptr,
-             int** obstacles_ptr, float** av_vels_ptr, t_speed** slice_cells_ptr);
+             int** obstacles_ptr, float** av_vels_ptr);
 
 /* Sum all the densities in the grid.
 ** The total should remain constant from one timestep to the next. */
@@ -199,6 +199,8 @@ int main(int argc, char* argv[])
   }
 #endif
   }
+
+  printf("1");
   
   /* Compute time stops here, collate time starts*/
   gettimeofday(&timstr, NULL);
@@ -207,7 +209,9 @@ int main(int argc, char* argv[])
 
   // Collate data from ranks here 
   //t_speed* test_cells;
-  t_speed* slice_cells;
+  //t_speed* slice_cells;
+
+  printf("2");
   /*
   //pack cells without halos
   slice_cells = (t_speed*)malloc(sizeof(t_speed) * processData.work * params.nx);
@@ -232,6 +236,8 @@ int main(int argc, char* argv[])
     }
   }
 
+  printf("3");
+
   /* Total/collate time stops here.*/
   gettimeofday(&timstr, NULL);
   col_toc = timstr.tv_sec + (timstr.tv_usec / 1000000.0);
@@ -248,7 +254,9 @@ int main(int argc, char* argv[])
     write_values(params, cells, obstacles, av_vels);
   }
 
-  finalise(&params, &cells, &tmp_cells, &obstacles, &av_vels, &slice_cells);
+  printf("4");
+
+  finalise(&params, &cells, &tmp_cells, &obstacles, &av_vels);
   MPI_Finalize();
 
   return EXIT_SUCCESS;
@@ -733,7 +741,7 @@ int initialise(const char* paramfile, const char* obstaclefile,
 }
 
 int finalise(const t_param* params, t_speed** cells_ptr, t_speed** tmp_cells_ptr,
-             int** obstacles_ptr, float** av_vels_ptr, t_speed** slice_cells_ptr)
+             int** obstacles_ptr, float** av_vels_ptr)
 {
   /*
   ** free up allocated memory
@@ -752,9 +760,6 @@ int finalise(const t_param* params, t_speed** cells_ptr, t_speed** tmp_cells_ptr
 
   //free(*test_cells_ptr);
   //*test_cells_ptr = NULL;
-
-  free(*slice_cells_ptr);
-  *slice_cells_ptr = NULL;
 
   return EXIT_SUCCESS;
 }
