@@ -609,7 +609,7 @@ int initialise(const char* paramfile, const char* obstaclefile,
   */
 
   pData->work = params->ny / pData->nprocs;
-  if(params->ny % pData->nprocs != 0 && pData.rank < params->ny % pData->nprocs){
+  if(params->ny % pData->nprocs != 0 && pData->rank < params->ny % pData->nprocs){
     pData->work++;
   }
 
