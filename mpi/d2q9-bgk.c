@@ -236,10 +236,21 @@ int main(int argc, char* argv[])
 
   //test_cells = (t_speed*)malloc(sizeof(t_speed) * params.ny * params.nx);
 
-  MPI_Gather(slice_cells, processData.work * params.nx * NSPEEDS, MPI_FLOAT, cells, processData.work * params.nx * NSPEEDS, MPI_FLOAT, 0, MPI_COMM_WORLD);
+  MPI_Gatherv(slice_cells, processData.work * params.nx * NSPEEDS, MPI_FLOAT, cells, processData.work * params.nx * NSPEEDS, MPI_FLOAT, 0, MPI_COMM_WORLD);
   
   float final_av_vels[params.maxIters];
-  MPI_Reduce(av_vels, final_av_vels, params.maxIters, MPI_FLOAT, MPI_SUM, 0, MPI_COMM_WORLD);
+
+  if (processData.rank == 0){
+    for (int tt = 0; tt < params.maxIters; tt++){
+      final_av_vels[tt] = av_vels[tt];
+    }
+  }
+  if (processData.rank == 0){
+    MPI_Reduce(MPI_IN_PLACE, final_av_vels, params.maxIters, MPI_FLOAT, MPI_SUM, 0, MPI_COMM_WORLD);
+  }
+  else{
+    MPI_Reduce(av_vels, NULL, params.maxIters, MPI_FLOAT, MPI_SUM, 0, MPI_COMM_WORLD);
+  }
   if (processData.rank == 0){
     for (int tt = 0; tt < params.maxIters; tt++){
       av_vels[tt] = final_av_vels[tt] / params.freeCells;
