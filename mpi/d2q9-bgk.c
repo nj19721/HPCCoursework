@@ -237,8 +237,6 @@ int main(int argc, char* argv[])
 
 
   MPI_Gatherv(slice_cells, processData.work * params.nx * NSPEEDS, MPI_FLOAT, cells, processData.recvCounts, processData.displ, MPI_FLOAT, 0, MPI_COMM_WORLD);
-
-  printf("rank %d here 4\n", processData.rank);
   
   //float final_av_vels[params.maxIters];
 
@@ -254,8 +252,6 @@ int main(int argc, char* argv[])
       av_vels[tt] = av_vels[tt] / params.freeCells;
     }
   }
-
-  printf("rank %d here 5\n", processData.rank);
 
   /* Total/collate time stops here.*/
   gettimeofday(&timstr, NULL);
