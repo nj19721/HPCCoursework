@@ -191,8 +191,6 @@ int main(int argc, char* argv[])
   init_toc = timstr.tv_sec + (timstr.tv_usec / 1000000.0);
   comp_tic=init_toc;
 
-  printf("rank %d here 1\n", processData.rank);
-
   for (int tt = 0; tt < params.maxIters; tt++)
   {
     av_vels[tt] = timestep(params, cells, tmp_cells, obstacles, processData);
@@ -205,8 +203,6 @@ int main(int argc, char* argv[])
   }
 #endif
   }
-
-  printf("rank %d here 2\n", processData.rank);
   
   /* Compute time stops here, collate time starts*/
   gettimeofday(&timstr, NULL);
@@ -239,8 +235,6 @@ int main(int argc, char* argv[])
     }
   }
 
-  printf("rank %d here 3\n", processData.rank);
-
 
   MPI_Gatherv(slice_cells, processData.work * params.nx * NSPEEDS, MPI_FLOAT, cells, processData.recvCounts, processData.displ, MPI_FLOAT, 0, MPI_COMM_WORLD);
 
@@ -252,7 +246,7 @@ int main(int argc, char* argv[])
     MPI_Reduce(MPI_IN_PLACE, av_vels, params.maxIters, MPI_FLOAT, MPI_SUM, 0, MPI_COMM_WORLD);
   }
   else{
-    MPI_Reduce(&av_vels, NULL, params.maxIters, MPI_FLOAT, MPI_SUM, 0, MPI_COMM_WORLD);
+    MPI_Reduce(av_vels, NULL, params.maxIters, MPI_FLOAT, MPI_SUM, 0, MPI_COMM_WORLD);
   }
 
   if (processData.rank == 0){
