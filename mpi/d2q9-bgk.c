@@ -72,7 +72,7 @@ typedef struct
   float density;       /* density per link */
   float accel;         /* density redistribution */
   float omega;         /* relaxation parameter */
-  int freeCells;       /* total cells without obstacles */
+  float freeCells;       /* total cells without obstacles */
 } t_param;
 
 typedef struct
@@ -88,6 +88,8 @@ typedef struct
   int accelFlowRow; /* tracks which process has 2nd row of grid to accelerate flow and which row it is in slice */
   int accelFlowRank; /* tracks which rank accelerates flow */
   int startVal; /* holds what point of the global grid local work starts - 1 */
+  int* recvCounts; /* holds work values for all processes, stored with correct byte values */
+  int* displ; /* holds displacements for all processes */
 } process_Data;
 
 
@@ -208,7 +210,6 @@ int main(int argc, char* argv[])
   col_tic=comp_toc;
 
   // Collate data from ranks here 
-  //t_speed* test_cells;
   t_speed* slice_cells;
 
   
@@ -234,26 +235,21 @@ int main(int argc, char* argv[])
     }
   }
 
-  //test_cells = (t_speed*)malloc(sizeof(t_speed) * params.ny * params.nx);
 
-  MPI_Gatherv(slice_cells, processData.work * params.nx * NSPEEDS, MPI_FLOAT, cells, processData.work * params.nx * NSPEEDS, MPI_FLOAT, 0, MPI_COMM_WORLD);
+  MPI_Gatherv(slice_cells, processData.work * params.nx * NSPEEDS, MPI_FLOAT, cells, processData.recvCounts, processData.displ, MPI_FLOAT, 0, MPI_COMM_WORLD);
   
-  float final_av_vels[params.maxIters];
+  //float final_av_vels[params.maxIters];
 
   if (processData.rank == 0){
-    for (int tt = 0; tt < params.maxIters; tt++){
-      final_av_vels[tt] = av_vels[tt];
-    }
-  }
-  if (processData.rank == 0){
-    MPI_Reduce(MPI_IN_PLACE, final_av_vels, params.maxIters, MPI_FLOAT, MPI_SUM, 0, MPI_COMM_WORLD);
+    MPI_Reduce(MPI_IN_PLACE, av_vels, params.maxIters, MPI_FLOAT, MPI_SUM, 0, MPI_COMM_WORLD);
   }
   else{
-    MPI_Reduce(av_vels, NULL, params.maxIters, MPI_FLOAT, MPI_SUM, 0, MPI_COMM_WORLD);
+    MPI_Reduce(&av_vels, NULL, params.maxIters, MPI_FLOAT, MPI_SUM, 0, MPI_COMM_WORLD);
   }
+
   if (processData.rank == 0){
     for (int tt = 0; tt < params.maxIters; tt++){
-      av_vels[tt] = final_av_vels[tt] / params.freeCells;
+      av_vels[tt] = av_vels[tt] / params.freeCells;
     }
   }
 
@@ -485,7 +481,7 @@ float collision(const t_param params, t_speed* cells, t_speed* tmp_cells, int* o
           local_density += cells[ii + jj*params.nx].speeds[kk];
         }
 
-        /* compute x velocity component */
+        // compute x velocity component 
         u_x = (cells[ii + jj*params.nx].speeds[1]
                       + cells[ii + jj*params.nx].speeds[5]
                       + cells[ii + jj*params.nx].speeds[8]
@@ -493,7 +489,7 @@ float collision(const t_param params, t_speed* cells, t_speed* tmp_cells, int* o
                          + cells[ii + jj*params.nx].speeds[6]
                          + cells[ii + jj*params.nx].speeds[7]))
                      / local_density;
-        /* compute y velocity component */
+        // compute y velocity component
         u_y = (cells[ii + jj*params.nx].speeds[2]
                       + cells[ii + jj*params.nx].speeds[5]
                       + cells[ii + jj*params.nx].speeds[6]
@@ -632,6 +628,10 @@ int initialise(const char* paramfile, const char* obstaclefile,
   */
 
   pData->work = params->ny / pData->nprocs;
+
+  pData->recvCounts = malloc(pData->nprocs * sizeof(int));
+  pData->displ = malloc(pData->nprocs * sizeof(int));
+
   if(params->ny % pData->nprocs != 0 && pData->rank < params->ny % pData->nprocs){
     pData->work++;
   }
@@ -646,6 +646,19 @@ int initialise(const char* paramfile, const char* obstaclefile,
   if(pData->rank != 0) pData->startVal--;
   //pData.startWork = pData.rank * pData.work;
   //pData.endWork = pData.startWork + pData.work;
+
+  int sendData = pData->startVal + 1;
+  if (pData->rank == 0) sendData--;
+
+  MPI_Gather(&pData->work, 1, MPI_INT, pData->recvCounts, 1, MPI_INT, 0, MPI_COMM_WORLD);
+  MPI_Gather(&sendData, 1, MPI_INT, pData->displ, 1, MPI_INT, 0, MPI_COMM_WORLD);
+
+  if (pData->rank == 0){
+    for (int n = 0 ; n < pData->nprocs; n++){
+      pData->recvCounts[n] = pData->recvCounts[n] * params->nx * NSPEEDS;
+      pData->displ[n] = pData->displ[n] * params->nx * NSPEEDS;
+    }
+  }
  
   pData->startWork = 1;
   pData->endWork = pData->work + 1;
@@ -740,7 +753,7 @@ int initialise(const char* paramfile, const char* obstaclefile,
     die(message, __LINE__, __FILE__);
   }
 
-  params->freeCells = params->nx * params->ny + 4;
+  params->freeCells = params->nx * params->ny;
   /* read-in the blocked cells list */
   while ((retval = fscanf(fp, "%d %d %d\n", &xx, &yy, &blocked)) != EOF)
   {
@@ -757,7 +770,7 @@ int initialise(const char* paramfile, const char* obstaclefile,
     (*obstacles_ptr)[xx + yy*params->nx] = blocked;
     params->freeCells--;
   }
-  if (pData->rank == 0) printf("freecells: %d\n", params->freeCells);
+  if (pData->rank == 0) printf("freecells: %f\n", params->freeCells);
 
   /* and close the file */
   fclose(fp);
